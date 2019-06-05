@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+    <FileVersion>2.5.0.0</FileVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Prodicus.AppDataType\Prodicus.Interfaces.AppDataType.csproj" />
+  </ItemGroup>
+
+</Project>
