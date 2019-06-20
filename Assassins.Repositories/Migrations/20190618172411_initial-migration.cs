@@ -4,14 +4,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Assassins.DataAccess.Migrations
 {
-    public partial class beginbuildingoutmodels : Migration
+    public partial class initialmigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AppUserRole_AppUsers_AppUserId",
-                table: "AppUserRole");
-
             migrationBuilder.CreateTable(
                 name: "ActionTypes",
                 columns: table => new
@@ -26,25 +22,112 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AppRoles",
+                columns: table => new
+                {
+                    RoleId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppRoles", x => x.RoleId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUsers",
+                columns: table => new
+                {
+                    AppUserId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AvatarUrl = table.Column<string>(nullable: true),
+                    ExternalId = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    IsSuspended = table.Column<bool>(nullable: false),
+                    IsDeleted = table.Column<bool>(nullable: false),
+                    AdAssassinId = table.Column<string>(nullable: true),
+                    CreatedById = table.Column<int>(nullable: false),
+                    CreatedOn = table.Column<DateTime>(nullable: false),
+                    ModifiedById = table.Column<int>(nullable: false),
+                    ModifiedOn = table.Column<DateTime>(nullable: false),
+                    CreatedBy = table.Column<string>(nullable: true),
+                    ModifiedBy = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUsers", x => x.AppUserId);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Business",
                 columns: table => new
                 {
-                    AaId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    id = table.Column<decimal>(nullable: false),
+                    id = table.Column<long>(nullable: false),
                     name = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Business", x => x.AaId);
+                    table.PrimaryKey("PK_Business", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserDataSync",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    AppUserId = table.Column<int>(nullable: false),
+                    StartTime = table.Column<DateTime>(nullable: false),
+                    EndTime = table.Column<DateTime>(nullable: true),
+                    AdAccountsCompleted = table.Column<bool>(nullable: false),
+                    CampaignsCompleted = table.Column<bool>(nullable: false),
+                    AdSetsCompleted = table.Column<bool>(nullable: false),
+                    AdsCompleted = table.Column<bool>(nullable: false),
+                    CreativesCompleted = table.Column<bool>(nullable: false),
+                    LeadFormsCompleted = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserDataSync", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AppUserDataSync_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AppUserRole",
+                columns: table => new
+                {
+                    AppUserId = table.Column<int>(nullable: false),
+                    RoleId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AppUserRole", x => new { x.AppUserId, x.RoleId });
+                    table.ForeignKey(
+                        name: "FK_AppUserRole_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AppUserRole_AppRoles_RoleId",
+                        column: x => x.RoleId,
+                        principalTable: "AppRoles",
+                        principalColumn: "RoleId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
                 name: "AdAccounts",
                 columns: table => new
                 {
-                    AaId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    account_id = table.Column<long>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     RecordDate = table.Column<DateTime>(nullable: false),
                     AppUserId = table.Column<int>(nullable: false),
@@ -53,8 +136,7 @@ namespace Assassins.DataAccess.Migrations
                     age = table.Column<double>(nullable: false),
                     balance = table.Column<double>(nullable: false),
                     name = table.Column<string>(nullable: true),
-                    account_id = table.Column<decimal>(nullable: false),
-                    BusinessId = table.Column<int>(nullable: false),
+                    business_id = table.Column<long>(nullable: true),
                     business_city = table.Column<string>(nullable: true),
                     business_country_code = table.Column<string>(nullable: true),
                     business_name = table.Column<string>(nullable: true),
@@ -76,7 +158,7 @@ namespace Assassins.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdAccounts", x => x.AaId);
+                    table.PrimaryKey("PK_AdAccounts", x => x.account_id);
                     table.ForeignKey(
                         name: "FK_AdAccounts_AppUsers_AppUserId",
                         column: x => x.AppUserId,
@@ -84,10 +166,10 @@ namespace Assassins.DataAccess.Migrations
                         principalColumn: "AppUserId",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_AdAccounts_Business_BusinessId",
-                        column: x => x.BusinessId,
+                        name: "FK_AdAccounts_Business_business_id",
+                        column: x => x.business_id,
                         principalTable: "Business",
-                        principalColumn: "AaId",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -99,16 +181,16 @@ namespace Assassins.DataAccess.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     event_type = table.Column<string>(nullable: true),
                     window_days = table.Column<int>(nullable: false),
-                    AdAccountId = table.Column<int>(nullable: false)
+                    account_id = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AttributionSpecs", x => x.AaId);
                     table.ForeignKey(
-                        name: "FK_AttributionSpecs_AdAccounts_AdAccountId",
-                        column: x => x.AdAccountId,
+                        name: "FK_AttributionSpecs_AdAccounts_account_id",
+                        column: x => x.account_id,
                         principalTable: "AdAccounts",
-                        principalColumn: "AaId",
+                        principalColumn: "account_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -116,13 +198,11 @@ namespace Assassins.DataAccess.Migrations
                 name: "Campaigns",
                 columns: table => new
                 {
-                    AaId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    id = table.Column<long>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     RecordDate = table.Column<DateTime>(nullable: false),
                     AppUserId = table.Column<int>(nullable: false),
-                    AdAccountId = table.Column<int>(nullable: false),
-                    account_id = table.Column<decimal>(nullable: false),
+                    account_id = table.Column<long>(nullable: false),
                     budget_rebalance_flag = table.Column<bool>(nullable: false),
                     budget_remaining = table.Column<int>(nullable: false),
                     buying_type = table.Column<string>(nullable: true),
@@ -131,7 +211,6 @@ namespace Assassins.DataAccess.Migrations
                     configured_status = table.Column<string>(nullable: true),
                     created_time = table.Column<DateTime>(nullable: false),
                     effective_status = table.Column<string>(nullable: true),
-                    id = table.Column<decimal>(nullable: false),
                     name = table.Column<string>(nullable: true),
                     objective = table.Column<string>(nullable: true),
                     source_campaign_id = table.Column<decimal>(nullable: false),
@@ -142,18 +221,18 @@ namespace Assassins.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Campaigns", x => x.AaId);
-                    table.ForeignKey(
-                        name: "FK_Campaigns_AdAccounts_AdAccountId",
-                        column: x => x.AdAccountId,
-                        principalTable: "AdAccounts",
-                        principalColumn: "AaId",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_Campaigns", x => x.id);
                     table.ForeignKey(
                         name: "FK_Campaigns_AppUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Campaigns_AdAccounts_account_id",
+                        column: x => x.account_id,
+                        principalTable: "AdAccounts",
+                        principalColumn: "account_id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -163,16 +242,16 @@ namespace Assassins.DataAccess.Migrations
                 {
                     AaId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CampaignId = table.Column<int>(nullable: false)
+                    campaign_id = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AdSets", x => x.AaId);
                     table.ForeignKey(
-                        name: "FK_AdSets_Campaigns_CampaignId",
-                        column: x => x.CampaignId,
+                        name: "FK_AdSets_Campaigns_campaign_id",
+                        column: x => x.campaign_id,
                         principalTable: "Campaigns",
-                        principalColumn: "AaId",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -180,9 +259,9 @@ namespace Assassins.DataAccess.Migrations
                 name: "CampaignInsights",
                 columns: table => new
                 {
-                    AaId = table.Column<int>(nullable: false)
+                    id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CampaignId = table.Column<int>(nullable: false),
+                    campaign_id = table.Column<long>(nullable: false),
                     buying_type = table.Column<string>(nullable: true),
                     clicks = table.Column<int>(nullable: false),
                     cost_per_inline_link_click = table.Column<double>(nullable: false),
@@ -215,12 +294,12 @@ namespace Assassins.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CampaignInsights", x => x.AaId);
+                    table.PrimaryKey("PK_CampaignInsights", x => x.id);
                     table.ForeignKey(
-                        name: "FK_CampaignInsights_Campaigns_CampaignId",
-                        column: x => x.CampaignId,
+                        name: "FK_CampaignInsights_Campaigns_campaign_id",
+                        column: x => x.campaign_id,
                         principalTable: "Campaigns",
-                        principalColumn: "AaId",
+                        principalColumn: "id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -230,32 +309,58 @@ namespace Assassins.DataAccess.Migrations
                 {
                     AaId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    campaign_insight_id = table.Column<long>(nullable: true),
                     action_type_id = table.Column<int>(nullable: false),
                     value = table.Column<double>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false),
-                    CampaignInsightId = table.Column<int>(nullable: true)
+                    Discriminator = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Actions", x => x.AaId);
-                    table.ForeignKey(
-                        name: "FK_Actions_CampaignInsights_CampaignInsightId",
-                        column: x => x.CampaignInsightId,
-                        principalTable: "CampaignInsights",
-                        principalColumn: "AaId",
-                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Actions_ActionTypes_action_type_id",
                         column: x => x.action_type_id,
                         principalTable: "ActionTypes",
                         principalColumn: "AaId",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Actions_CampaignInsights_campaign_insight_id",
+                        column: x => x.campaign_insight_id,
+                        principalTable: "CampaignInsights",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Actions_CampaignInsightId",
-                table: "Actions",
-                column: "CampaignInsightId");
+            migrationBuilder.InsertData(
+                table: "AppRoles",
+                columns: new[] { "RoleId", "Name" },
+                values: new object[,]
+                {
+                    { 1, "Administrator" },
+                    { 2, "Assassins Club Free" },
+                    { 3, "Assassins Club Premium" },
+                    { 4, "Assassins Club Platinum" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUsers",
+                columns: new[] { "AppUserId", "AdAssassinId", "AvatarUrl", "CreatedBy", "CreatedById", "CreatedOn", "Email", "ExternalId", "FirstName", "IsDeleted", "IsSuspended", "LastName", "ModifiedBy", "ModifiedById", "ModifiedOn" },
+                values: new object[,]
+                {
+                    { 1, null, "http://free-icon-rainbow.com/i/icon_04062/icon_040629_64.png", "joe.jordan@assassinsclub.com", 2, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "system@assassinsclub.com", "8BNz8FqTVGVjYyXudC6DSZkpiws1", "System", false, false, "Bot", "joe.jordan@assassinsclub.com", 2, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, null, "https://i0.wp.com/cdn.auth0.com/avatars/dj.png?ssl=1", "system@assassinsclub.com", 1, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "joe.jordan@outlook.com", "lv9iYbUYKdRQ0i700sVt9ZjVFps1", "Joe", false, false, "Jordan", "system@assassinsclub.com", 1, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 3, null, "https://i0.wp.com/cdn.auth0.com/avatars/jj.png?ssl=1", "system@assassinsclub.com", 1, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), "joe.jordan25@gmail.com", "x1EZhRH3tVfwTEsE2f2nHJce4yy2", "Joe", false, false, "Jordan", "system@assassinsclub.com", 1, new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRole",
+                columns: new[] { "AppUserId", "RoleId" },
+                values: new object[] { 1, 1 });
+
+            migrationBuilder.InsertData(
+                table: "AppUserRole",
+                columns: new[] { "AppUserId", "RoleId" },
+                values: new object[] { 2, 1 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Actions_action_type_id",
@@ -263,55 +368,58 @@ namespace Assassins.DataAccess.Migrations
                 column: "action_type_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Actions_campaign_insight_id",
+                table: "Actions",
+                column: "campaign_insight_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_AdAccounts_AppUserId",
                 table: "AdAccounts",
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdAccounts_BusinessId",
+                name: "IX_AdAccounts_business_id",
                 table: "AdAccounts",
-                column: "BusinessId");
+                column: "business_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AdSets_CampaignId",
+                name: "IX_AdSets_campaign_id",
                 table: "AdSets",
-                column: "CampaignId");
+                column: "campaign_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_AttributionSpecs_AdAccountId",
+                name: "IX_AppUserDataSync_AppUserId",
+                table: "AppUserDataSync",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AppUserRole_RoleId",
+                table: "AppUserRole",
+                column: "RoleId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AttributionSpecs_account_id",
                 table: "AttributionSpecs",
-                column: "AdAccountId");
+                column: "account_id");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CampaignInsights_CampaignId",
+                name: "IX_CampaignInsights_campaign_id",
                 table: "CampaignInsights",
-                column: "CampaignId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Campaigns_AdAccountId",
-                table: "Campaigns",
-                column: "AdAccountId");
+                column: "campaign_id");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Campaigns_AppUserId",
                 table: "Campaigns",
                 column: "AppUserId");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AppUserRole_AppUsers_AppUserId",
-                table: "AppUserRole",
-                column: "AppUserId",
-                principalTable: "AppUsers",
-                principalColumn: "AppUserId",
-                onDelete: ReferentialAction.Restrict);
+            migrationBuilder.CreateIndex(
+                name: "IX_Campaigns_account_id",
+                table: "Campaigns",
+                column: "account_id");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropForeignKey(
-                name: "FK_AppUserRole_AppUsers_AppUserId",
-                table: "AppUserRole");
-
             migrationBuilder.DropTable(
                 name: "Actions");
 
@@ -319,13 +427,22 @@ namespace Assassins.DataAccess.Migrations
                 name: "AdSets");
 
             migrationBuilder.DropTable(
+                name: "AppUserDataSync");
+
+            migrationBuilder.DropTable(
+                name: "AppUserRole");
+
+            migrationBuilder.DropTable(
                 name: "AttributionSpecs");
+
+            migrationBuilder.DropTable(
+                name: "ActionTypes");
 
             migrationBuilder.DropTable(
                 name: "CampaignInsights");
 
             migrationBuilder.DropTable(
-                name: "ActionTypes");
+                name: "AppRoles");
 
             migrationBuilder.DropTable(
                 name: "Campaigns");
@@ -334,15 +451,10 @@ namespace Assassins.DataAccess.Migrations
                 name: "AdAccounts");
 
             migrationBuilder.DropTable(
-                name: "Business");
+                name: "AppUsers");
 
-            migrationBuilder.AddForeignKey(
-                name: "FK_AppUserRole_AppUsers_AppUserId",
-                table: "AppUserRole",
-                column: "AppUserId",
-                principalTable: "AppUsers",
-                principalColumn: "AppUserId",
-                onDelete: ReferentialAction.Cascade);
+            migrationBuilder.DropTable(
+                name: "Business");
         }
     }
 }

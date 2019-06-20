@@ -7,7 +7,7 @@ namespace Assassins.DataModels.AdSets
     public class AdSet : IDataModel
     {
         public int AaId { get; set; }
-        public int CampaignId { get; set; }
+        public long campaign_id { get; set; }
         public virtual Campaign Campaign { get; set; }
         public IDataViewModel ToViewModel()
         {

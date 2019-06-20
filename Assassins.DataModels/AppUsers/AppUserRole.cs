@@ -1,4 +1,4 @@
-﻿namespace Assassins.DataModels.Users
+﻿namespace Assassins.DataModels.AppUsers
 {
     public class AppUserRole
     {

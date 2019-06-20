@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assassins.DataAccess.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20190605220717_begin-building-out-models")]
-    partial class beginbuildingoutmodels
+    [Migration("20190618172411_initial-migration")]
+    partial class initialmigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,20 +27,20 @@ namespace Assassins.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("CampaignInsightId");
-
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
                     b.Property<int>("action_type_id");
 
+                    b.Property<long?>("campaign_insight_id");
+
                     b.Property<double>("value");
 
                     b.HasKey("AaId");
 
-                    b.HasIndex("CampaignInsightId");
-
                     b.HasIndex("action_type_id");
+
+                    b.HasIndex("campaign_insight_id");
 
                     b.ToTable("Actions");
 
@@ -62,20 +62,13 @@ namespace Assassins.DataAccess.Migrations
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.AdAccount", b =>
                 {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("account_id");
 
                     b.Property<int>("AppUserId");
-
-                    b.Property<int>("BusinessId");
 
                     b.Property<DateTime>("CreatedOn");
 
                     b.Property<DateTime>("RecordDate");
-
-                    b.Property<decimal>("account_id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<int>("account_status");
 
@@ -88,6 +81,8 @@ namespace Assassins.DataAccess.Migrations
                     b.Property<string>("business_city");
 
                     b.Property<string>("business_country_code");
+
+                    b.Property<long?>("business_id");
 
                     b.Property<string>("business_name");
 
@@ -125,11 +120,11 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<int>("timezone_offset_hours_utc");
 
-                    b.HasKey("AaId");
+                    b.HasKey("account_id");
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("BusinessId");
+                    b.HasIndex("business_id");
 
                     b.ToTable("AdAccounts");
                 });
@@ -140,7 +135,7 @@ namespace Assassins.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("AdAccountId");
+                    b.Property<long>("account_id");
 
                     b.Property<string>("event_type");
 
@@ -148,23 +143,18 @@ namespace Assassins.DataAccess.Migrations
 
                     b.HasKey("AaId");
 
-                    b.HasIndex("AdAccountId");
+                    b.HasIndex("account_id");
 
                     b.ToTable("AttributionSpecs");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.Business", b =>
                 {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<long>("id");
 
                     b.Property<string>("name");
 
-                    b.HasKey("AaId");
+                    b.HasKey("id");
 
                     b.ToTable("Business");
                 });
@@ -175,149 +165,16 @@ namespace Assassins.DataAccess.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("CampaignId");
+                    b.Property<long>("campaign_id");
 
                     b.HasKey("AaId");
 
-                    b.HasIndex("CampaignId");
+                    b.HasIndex("campaign_id");
 
                     b.ToTable("AdSets");
                 });
 
-            modelBuilder.Entity("Assassins.DataModels.Campaigns.Campaign", b =>
-                {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("AdAccountId");
-
-                    b.Property<int>("AppUserId");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<DateTime>("RecordDate");
-
-                    b.Property<decimal>("account_id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
-
-                    b.Property<bool>("budget_rebalance_flag");
-
-                    b.Property<int>("budget_remaining");
-
-                    b.Property<string>("buying_type");
-
-                    b.Property<bool>("can_create_brand_lift_study");
-
-                    b.Property<bool>("can_use_spend_cap");
-
-                    b.Property<string>("configured_status");
-
-                    b.Property<DateTime>("created_time");
-
-                    b.Property<string>("effective_status");
-
-                    b.Property<decimal>("id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
-
-                    b.Property<string>("name");
-
-                    b.Property<string>("objective");
-
-                    b.Property<decimal>("source_campaign_id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
-
-                    b.Property<DateTime>("start_time");
-
-                    b.Property<string>("status");
-
-                    b.Property<DateTime?>("stop_time");
-
-                    b.Property<DateTime?>("updated_time");
-
-                    b.HasKey("AaId");
-
-                    b.HasIndex("AdAccountId");
-
-                    b.HasIndex("AppUserId");
-
-                    b.ToTable("Campaigns");
-                });
-
-            modelBuilder.Entity("Assassins.DataModels.Campaigns.CampaignInsight", b =>
-                {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("CampaignId");
-
-                    b.Property<string>("buying_type");
-
-                    b.Property<int>("clicks");
-
-                    b.Property<double>("cost_per_inline_link_click");
-
-                    b.Property<double>("cost_per_inline_post_engagement");
-
-                    b.Property<double>("cost_per_unique_click");
-
-                    b.Property<double>("cost_per_unique_inline_link_click");
-
-                    b.Property<double>("cpc");
-
-                    b.Property<double>("cpm");
-
-                    b.Property<double>("cpp");
-
-                    b.Property<double>("ctr");
-
-                    b.Property<DateTime>("date_start");
-
-                    b.Property<DateTime>("date_stop");
-
-                    b.Property<double>("frequency");
-
-                    b.Property<long>("impressions");
-
-                    b.Property<double>("inline_link_click_ctr");
-
-                    b.Property<long>("inline_link_clicks");
-
-                    b.Property<long>("inline_post_engagement");
-
-                    b.Property<long>("instant_experience_clicks_to_open");
-
-                    b.Property<long>("instant_experience_clicks_to_start");
-
-                    b.Property<long>("instant_experience_outbound_clicks");
-
-                    b.Property<string>("objective");
-
-                    b.Property<long>("reach");
-
-                    b.Property<double>("social_spend");
-
-                    b.Property<double>("spend");
-
-                    b.Property<long>("unique_clicks");
-
-                    b.Property<double>("unique_ctr");
-
-                    b.Property<double>("unique_inline_link_click_ctr");
-
-                    b.Property<long>("unique_inline_link_clicks");
-
-                    b.Property<double>("unique_link_clicks_ctr");
-
-                    b.HasKey("AaId");
-
-                    b.HasIndex("CampaignId");
-
-                    b.ToTable("CampaignInsights");
-                });
-
-            modelBuilder.Entity("Assassins.DataModels.Users.AppRole", b =>
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppRole", b =>
                 {
                     b.Property<int>("RoleId")
                         .ValueGeneratedOnAdd()
@@ -352,7 +209,7 @@ namespace Assassins.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Assassins.DataModels.Users.AppUser", b =>
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUser", b =>
                 {
                     b.Property<int>("AppUserId")
                         .ValueGeneratedOnAdd()
@@ -424,10 +281,58 @@ namespace Assassins.DataAccess.Migrations
                             ModifiedBy = "system@assassinsclub.com",
                             ModifiedById = 1,
                             ModifiedOn = new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                        },
+                        new
+                        {
+                            AppUserId = 3,
+                            AvatarUrl = "https://i0.wp.com/cdn.auth0.com/avatars/jj.png?ssl=1",
+                            CreatedBy = "system@assassinsclub.com",
+                            CreatedById = 1,
+                            CreatedOn = new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Email = "joe.jordan25@gmail.com",
+                            ExternalId = "x1EZhRH3tVfwTEsE2f2nHJce4yy2",
+                            FirstName = "Joe",
+                            IsDeleted = false,
+                            IsSuspended = false,
+                            LastName = "Jordan",
+                            ModifiedBy = "system@assassinsclub.com",
+                            ModifiedById = 1,
+                            ModifiedOn = new DateTime(1980, 10, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
-            modelBuilder.Entity("Assassins.DataModels.Users.AppUserRole", b =>
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUserDataSync", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<bool>("AdAccountsCompleted");
+
+                    b.Property<bool>("AdSetsCompleted");
+
+                    b.Property<bool>("AdsCompleted");
+
+                    b.Property<int>("AppUserId");
+
+                    b.Property<bool>("CampaignsCompleted");
+
+                    b.Property<bool>("CreativesCompleted");
+
+                    b.Property<DateTime?>("EndTime");
+
+                    b.Property<bool>("LeadFormsCompleted");
+
+                    b.Property<DateTime>("StartTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.ToTable("AppUserDataSync");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUserRole", b =>
                 {
                     b.Property<int>("AppUserId");
 
@@ -450,6 +355,131 @@ namespace Assassins.DataAccess.Migrations
                             AppUserId = 2,
                             RoleId = 1
                         });
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Campaigns.Campaign", b =>
+                {
+                    b.Property<long>("id");
+
+                    b.Property<int>("AppUserId");
+
+                    b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime>("RecordDate");
+
+                    b.Property<long>("account_id");
+
+                    b.Property<bool>("budget_rebalance_flag");
+
+                    b.Property<int>("budget_remaining");
+
+                    b.Property<string>("buying_type");
+
+                    b.Property<bool>("can_create_brand_lift_study");
+
+                    b.Property<bool>("can_use_spend_cap");
+
+                    b.Property<string>("configured_status");
+
+                    b.Property<DateTime>("created_time");
+
+                    b.Property<string>("effective_status");
+
+                    b.Property<string>("name");
+
+                    b.Property<string>("objective");
+
+                    b.Property<decimal>("source_campaign_id")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+
+                    b.Property<DateTime>("start_time");
+
+                    b.Property<string>("status");
+
+                    b.Property<DateTime?>("stop_time");
+
+                    b.Property<DateTime?>("updated_time");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("account_id");
+
+                    b.ToTable("Campaigns");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Campaigns.CampaignInsight", b =>
+                {
+                    b.Property<long>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("buying_type");
+
+                    b.Property<long>("campaign_id");
+
+                    b.Property<int>("clicks");
+
+                    b.Property<double>("cost_per_inline_link_click");
+
+                    b.Property<double>("cost_per_inline_post_engagement");
+
+                    b.Property<double>("cost_per_unique_click");
+
+                    b.Property<double>("cost_per_unique_inline_link_click");
+
+                    b.Property<double>("cpc");
+
+                    b.Property<double>("cpm");
+
+                    b.Property<double>("cpp");
+
+                    b.Property<double>("ctr");
+
+                    b.Property<DateTime>("date_start");
+
+                    b.Property<DateTime>("date_stop");
+
+                    b.Property<double>("frequency");
+
+                    b.Property<long>("impressions");
+
+                    b.Property<double>("inline_link_click_ctr");
+
+                    b.Property<long>("inline_link_clicks");
+
+                    b.Property<long>("inline_post_engagement");
+
+                    b.Property<long>("instant_experience_clicks_to_open");
+
+                    b.Property<long>("instant_experience_clicks_to_start");
+
+                    b.Property<long>("instant_experience_outbound_clicks");
+
+                    b.Property<string>("objective");
+
+                    b.Property<long>("reach");
+
+                    b.Property<double>("social_spend");
+
+                    b.Property<double>("spend");
+
+                    b.Property<long>("unique_clicks");
+
+                    b.Property<double>("unique_ctr");
+
+                    b.Property<double>("unique_inline_link_click_ctr");
+
+                    b.Property<long>("unique_inline_link_clicks");
+
+                    b.Property<double>("unique_link_clicks_ctr");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("campaign_id");
+
+                    b.ToTable("CampaignInsights");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.Actions.CostPer10SecVideoView", b =>
@@ -566,35 +596,35 @@ namespace Assassins.DataAccess.Migrations
 
             modelBuilder.Entity("Assassins.DataModels.Actions.Action", b =>
                 {
-                    b.HasOne("Assassins.DataModels.Campaigns.CampaignInsight", "CampaignInsight")
-                        .WithMany("actions")
-                        .HasForeignKey("CampaignInsightId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
                     b.HasOne("Assassins.DataModels.Actions.ActionType", "action_type")
                         .WithMany("Actions")
                         .HasForeignKey("action_type_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.Campaigns.CampaignInsight", "CampaignInsight")
+                        .WithMany("actions")
+                        .HasForeignKey("campaign_insight_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.AdAccount", b =>
                 {
-                    b.HasOne("Assassins.DataModels.Users.AppUser", "AppUser")
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
                         .WithMany("AdAccounts")
                         .HasForeignKey("AppUserId")
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("Assassins.DataModels.AdAccounts.Business", "business")
                         .WithMany("AdAccounts")
-                        .HasForeignKey("BusinessId")
+                        .HasForeignKey("business_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.AttributionSpec", b =>
                 {
                     b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
-                        .WithMany("attribution_specs")
-                        .HasForeignKey("AdAccountId")
+                        .WithMany("attribution_spec")
+                        .HasForeignKey("account_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -602,20 +632,41 @@ namespace Assassins.DataAccess.Migrations
                 {
                     b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
                         .WithMany("adsets")
-                        .HasForeignKey("CampaignId")
+                        .HasForeignKey("campaign_id")
                         .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUserDataSync", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
+                        .WithMany("DataSyncs")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUserRole", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
+                        .WithMany("UserRoles")
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AppUsers.AppRole", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Assassins.DataModels.Campaigns.Campaign", b =>
                 {
-                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
-                        .WithMany("campaigns")
-                        .HasForeignKey("AdAccountId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Assassins.DataModels.Users.AppUser", "AppUser")
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
                         .WithMany("Campaigns")
                         .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
+                        .WithMany("campaigns")
+                        .HasForeignKey("account_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
@@ -623,21 +674,8 @@ namespace Assassins.DataAccess.Migrations
                 {
                     b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
                         .WithMany("CampaignInsights")
-                        .HasForeignKey("CampaignId")
+                        .HasForeignKey("campaign_id")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("Assassins.DataModels.Users.AppUserRole", b =>
-                {
-                    b.HasOne("Assassins.DataModels.Users.AppUser", "AppUser")
-                        .WithMany("UserRoles")
-                        .HasForeignKey("AppUserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Assassins.DataModels.Users.AppRole", "Role")
-                        .WithMany()
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

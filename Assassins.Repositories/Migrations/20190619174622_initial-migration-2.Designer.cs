@@ -4,14 +4,16 @@ using Assassins.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Assassins.DataAccess.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20190619174622_initial-migration-2")]
+    partial class initialmigration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,7 +96,8 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<int>("disable_reason");
 
-                    b.Property<long?>("end_advertiser");
+                    b.Property<decimal>("end_advertiser")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<string>("end_advertiser_name");
 
@@ -106,7 +109,8 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("name");
 
-                    b.Property<long>("owner");
+                    b.Property<decimal>("owner")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<int>("spend_cap");
 
@@ -238,8 +242,6 @@ namespace Assassins.DataAccess.Migrations
                     b.Property<int>("ModifiedById");
 
                     b.Property<DateTime>("ModifiedOn");
-
-                    b.Property<long?>("id");
 
                     b.HasKey("AppUserId");
 
@@ -387,7 +389,8 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("objective");
 
-                    b.Property<long?>("source_campaign_id");
+                    b.Property<decimal>("source_campaign_id")
+                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
 
                     b.Property<DateTime>("start_time");
 

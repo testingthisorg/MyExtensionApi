@@ -4,11 +4,12 @@ using Assassins.DataModels.Interfaces;
 using System;
 using System.Collections.Generic;
 
-namespace Assassins.DataModels.Users
+namespace Assassins.DataModels.AppUsers
 {
     public class AppUser : IDataModel, IModificationHistory
     {
         public int AppUserId { get; set; }
+        public long? id { get; set; }
         public string AvatarUrl { get; set; }
         public string ExternalId { get; set; }
         public string Email { get; set; }
@@ -16,6 +17,8 @@ namespace Assassins.DataModels.Users
         public string LastName { get; set; }
         public bool IsSuspended { get; set; }
         public bool IsDeleted { get; set; }
+
+        public virtual ICollection<AppUserDataSync> DataSyncs { get; set; }
         public virtual ICollection<AdAccount> AdAccounts { get; set; }
         public virtual ICollection<Campaign> Campaigns { get; set; }
 
@@ -33,6 +36,7 @@ namespace Assassins.DataModels.Users
         {
             var item = new AppUserViewModel()
             {
+                id = id,
                 AppUserId = AppUserId,
                 ExternalId = ExternalId,
                 AvatarUrl = AvatarUrl,
@@ -64,6 +68,7 @@ namespace Assassins.DataModels.Users
 
     public class AppUserViewModel : IDataViewModel
     {
+        public long? id { get; set; }
         public int AppUserId { get; set; }
         public string ExternalId { get; set; }
         public string Email { get; set; }
@@ -83,6 +88,7 @@ namespace Assassins.DataModels.Users
         {
             var item = new AppUser()
             {
+                id = id,
                 AppUserId = AppUserId,
                 AvatarUrl = AvatarUrl,
                 ExternalId = ExternalId,

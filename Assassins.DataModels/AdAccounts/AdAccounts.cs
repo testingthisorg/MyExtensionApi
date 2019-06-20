@@ -1,6 +1,6 @@
-﻿using Assassins.DataModels.Campaigns;
+﻿using Assassins.DataModels.AppUsers;
+using Assassins.DataModels.Campaigns;
 using Assassins.DataModels.Interfaces;
-using Assassins.DataModels.Users;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -12,16 +12,26 @@ namespace Assassins.DataModels.AdAccounts
     {
         public static ICollection<AdAccount> ParseCollection(List<object> accounts)
         {
+            var parsedAccnts = new List<AdAccount>();
+            var parsedBusinesses = new Dictionary<long, Business>();
             foreach (var item in accounts)
             {
                 var jObj = item as JObject;
-                var props = jObj.Properties().ToDictionary(k => k.Name, m => m.Value);
+               // var props = jObj.Properties().ToDictionary(k => k.Name, m => m.Value);
                 var accnt = jObj.ToObject<AdAccount>();
+                if (accnt.business != null)
+                {
+                    if (!parsedBusinesses.ContainsKey(accnt.business.id))
+                        parsedBusinesses.Add(accnt.business.id, accnt.business);
+                    else
+                        accnt.business = parsedBusinesses[accnt.business.id];
+                }
+                parsedAccnts.Add(accnt);
             }
-            return null;
+            return parsedAccnts;
         }
 
-        public int AaId { get; set; }
+        //public int AaId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime RecordDate { get; set; }
         public int AppUserId { get; set; }
@@ -35,9 +45,9 @@ namespace Assassins.DataModels.AdAccounts
         public double age { get; set; }
         public double balance { get; set; }
         public string name { get; set; }
-        public ulong account_id { get; set; }
+        public long account_id { get; set; }
         public ICollection<AttributionSpec> attribution_spec { get; set; }
-        public int BusinessId { get; set; }
+        public long? business_id { get; set; }
         public virtual Business business { get; set; }
         public string business_city { get; set; }
         public string business_country_code { get; set; }
@@ -47,12 +57,12 @@ namespace Assassins.DataModels.AdAccounts
         public DateTime created_time { get; set; }
         public string currency { get; set; }
         public int disable_reason { get; set; }
-        public ulong end_advertiser { get; set; }
+        public long? end_advertiser { get; set; }
         public string end_advertiser_name { get; set; }
         public int fb_entity { get; set; }
         public int min_campaign_group_spend_cap { get; set; }
         public int min_daily_budget { get; set; }
-        public ulong owner { get; set; }
+        public long owner { get; set; }
         public int spend_cap { get; set; }
         public int timezone_id { get; set; }
         public string timezone_name { get; set; }
@@ -64,7 +74,7 @@ namespace Assassins.DataModels.AdAccounts
         {
             var vm = new AdAccountViewModel()
             {
-                AaId = AaId,
+                //AaId = AaId,
                 AppUserId = AppUserId,
 
                 account_id = account_id,
@@ -120,7 +130,7 @@ namespace Assassins.DataModels.AdAccounts
     }
     public class AdAccountViewModel : IDataViewModel
     {
-        public int AaId { get; set; }
+        //public int AaId { get; set; }
         public int AppUserId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime RecordDate { get; set; }
@@ -133,7 +143,7 @@ namespace Assassins.DataModels.AdAccounts
         public double age { get; set; }
         public double balance { get; set; }
         public string name { get; set; }
-        public ulong account_id { get; set; }
+        public long account_id { get; set; }
         public ICollection<AttributionSpecViewModel> attribution_spec { get; set; }
         public BusinessViewModel business { get; set; }
         public string business_city { get; set; }
@@ -144,12 +154,12 @@ namespace Assassins.DataModels.AdAccounts
         public DateTime created_time { get; set; }
         public string currency { get; set; }
         public int disable_reason { get; set; }
-        public ulong end_advertiser { get; set; }
+        public long? end_advertiser { get; set; }
         public string end_advertiser_name { get; set; }
         public int fb_entity { get; set; }
         public int min_campaign_group_spend_cap { get; set; }
         public int min_daily_budget { get; set; }
-        public ulong owner { get; set; }
+        public long owner { get; set; }
         public int spend_cap { get; set; }
         public int timezone_id { get; set; }
         public string timezone_name { get; set; }
@@ -160,7 +170,7 @@ namespace Assassins.DataModels.AdAccounts
         {
             var model = new AdAccount()
             {
-                AaId = AaId,
+                //AaId = AaId,
                 AppUserId = AppUserId,
                 CreatedOn = CreatedOn,                
                 RecordDate = RecordDate,

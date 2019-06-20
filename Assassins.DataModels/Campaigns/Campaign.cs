@@ -1,28 +1,45 @@
 ﻿using Assassins.DataModels.AdAccounts;
 using Assassins.DataModels.AdSets;
+using Assassins.DataModels.AppUsers;
 using Assassins.DataModels.Interfaces;
-using Assassins.DataModels.Users;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Assassins.DataModels.Campaigns
 {
     public class Campaign : IDataModel
     {
-        public int AaId { get; set; }
+
+        public static ICollection<Campaign> ParseCollection(List<object> campaigns)
+        {
+            var parsedItems = new List<Campaign>();
+            foreach (var item in campaigns)
+            {
+                var jObj = item as JObject;
+               // var props = jObj.Properties().ToDictionary(k => k.Name, m => m.Value);
+                var accnt = jObj.ToObject<Campaign>();
+                parsedItems.Add(accnt);
+            }
+            return parsedItems;
+        }
+
+        //public int AaId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime RecordDate { get; set; }
         public int AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
 
-        public int AdAccountId { get; set; }
+        //public int AdAccountId { get; set; }
         public virtual AdAccount AdAccount { get; set; }
 
         public virtual ICollection<CampaignInsight> CampaignInsights { get; set; }
         public ICollection<AdSet> adsets { get; set; }
 
         #region // FB Properties ===========================
-        public ulong account_id { get; set; }
+        public long id { get; set; }
+        public long account_id { get; set; }
         public bool budget_rebalance_flag { get; set; }
         public int budget_remaining { get; set; }
         public string buying_type { get; set; }
@@ -31,10 +48,9 @@ namespace Assassins.DataModels.Campaigns
         public string configured_status { get; set; }
         public DateTime created_time { get; set; }
         public string effective_status { get; set; }
-        public ulong id { get; set; }
         public string name { get; set; }
         public string objective { get; set; }
-        public ulong source_campaign_id { get; set; }
+        public long? source_campaign_id { get; set; }
         public DateTime start_time { get; set; }
         public DateTime? stop_time { get; set; }
         public DateTime? updated_time { get; set; }
@@ -46,7 +62,7 @@ namespace Assassins.DataModels.Campaigns
         {
             var vm = new CampaignViewModel()
             {
-                AaId = AaId,
+                //AaId = AaId,
                 CreatedOn = CreatedOn,
                 RecordDate = RecordDate,
                 AppUserId = AppUserId,
@@ -80,6 +96,8 @@ namespace Assassins.DataModels.Campaigns
             }
             return vm;
         }
+
+
     }
     public class CampaignViewModel : IDataViewModel
     {
@@ -89,12 +107,12 @@ namespace Assassins.DataModels.Campaigns
         public int AppUserId { get; set; }
         public virtual AppUserViewModel AppUser { get; set; }
 
-        public int AdAccountId { get; set; }
+        public long account_id { get; set; }
         public virtual AdAccountViewModel AdAccount { get; set; }
 
         public ICollection<AdSetViewModel> adsets { get; set; }
         #region // FB Properties ===========================
-        public ulong account_id { get; set; }
+        public long id { get; set; }
         public bool budget_rebalance_flag { get; set; }
         public int budget_remaining { get; set; }
         public string buying_type { get; set; }
@@ -103,10 +121,9 @@ namespace Assassins.DataModels.Campaigns
         public string configured_status { get; set; }
         public DateTime created_time { get; set; }
         public string effective_status { get; set; }
-        public ulong id { get; set; }
         public string name { get; set; }
         public string objective { get; set; }
-        public ulong source_campaign_id { get; set; }
+        public long? source_campaign_id { get; set; }
         public DateTime start_time { get; set; }
         public DateTime? stop_time { get; set; }
         public DateTime? updated_time { get; set; }
@@ -117,7 +134,8 @@ namespace Assassins.DataModels.Campaigns
         {
             var model = new Campaign()
             {
-                AaId = AaId,
+                //AaId = AaId,
+                id = id,
                 CreatedOn = CreatedOn,
                 RecordDate = RecordDate,
                 AppUserId = AppUserId,
@@ -131,7 +149,6 @@ namespace Assassins.DataModels.Campaigns
                 configured_status = configured_status,
                 created_time = created_time,
                 effective_status = effective_status,
-                id = id,
                 name = name,
                 objective = objective,
                 source_campaign_id = source_campaign_id,

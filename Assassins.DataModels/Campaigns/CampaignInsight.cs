@@ -8,13 +8,14 @@ namespace Assassins.DataModels.Campaigns
 {
     public class CampaignInsight : IDataModel
     {
-        public int AaId { get; set; }
+        //public int AaId { get; set; }
 
         public virtual ICollection<Action> actions { get; set; }
-        public int CampaignId { get; set; }
+        public long campaign_id { get; set; }
         public virtual Campaign Campaign { get; set; }
 
         #region // FB Properties ===========================
+        public long id { get; set; }
         public string buying_type { get; set; }
         public int clicks { get; set; }
         public double cost_per_inline_link_click { get; set; }
@@ -51,11 +52,12 @@ namespace Assassins.DataModels.Campaigns
         {
             var vm = new CampaignInsightViewModel()
             {
-                AaId = AaId,
+                id = id,
+                //AaId = AaId,
                 //actions = actions,
                 buying_type = buying_type,
                 //Campaign = Campaign,
-                CampaignId = CampaignId,
+                campaign_id = campaign_id,
                 clicks = clicks,
                 cost_per_inline_link_click = cost_per_inline_link_click,
                 cost_per_inline_post_engagement = cost_per_inline_post_engagement,
@@ -100,13 +102,14 @@ namespace Assassins.DataModels.Campaigns
 
     public class CampaignInsightViewModel : IDataViewModel
     {
-        public int AaId { get; set; }
+        //public int AaId { get; set; }
 
         public ICollection<ActionViewModel> actions { get; set; }
-        public int CampaignId { get; set; }
+        public long campaign_id { get; set; }
         public CampaignViewModel Campaign { get; set; }
 
         #region // FB Properties ===========================
+        public long id { get; set; }
         public string buying_type { get; set; }
         public int clicks { get; set; }
         public double cost_per_inline_link_click { get; set; }
@@ -142,11 +145,12 @@ namespace Assassins.DataModels.Campaigns
         {
             var model = new CampaignInsight()
             {
-                AaId = AaId,
+                id = id,
+                //AaId = AaId,
                 //actions = actions,
                 buying_type = buying_type,
                 //Campaign = Campaign,
-                CampaignId = CampaignId,
+                campaign_id = campaign_id,
                 clicks = clicks,
                 cost_per_inline_link_click = cost_per_inline_link_click,
                 cost_per_inline_post_engagement = cost_per_inline_post_engagement,

@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Assassins.Api.AuthAdapters;
+﻿using Assassins.Api.AuthAdapters;
 using Assassins.DataAccess.Repositories.AppUsers;
-using Assassins.DataModels.Users;
+using Assassins.DataModels.AppUsers;
 using Assassins.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +46,30 @@ namespace Assassins.Api.Controllers
             var model = _userRepo.GetUserById(id);
             var vm = model.ToViewModel();
             return Json(vm);
+        }
+        [HttpGet("{id}/sync-status")]
+        public JsonResult GetUserDataSyncStatus(int id)
+        {
+            var dataSyncItems = new List<AppUserDataSync>();
+
+            var models = _userRepo.GetUserDataSyncStatus(id);
+            if (!models.Any(k => k.StartTime.Date == DateTime.UtcNow.Date))
+            {
+                var newDs = new AppUserDataSync()
+                {
+                    StartTime = DateTime.UtcNow,
+                    AppUserId = id,
+
+                };
+                models.Add(newDs);
+                _userRepo.AddDataSyncStatus(newDs);
+                _userRepo.Base.SaveAll(User);
+            }
+
+            var vms = models.OrderBy(k => k.StartTime).Select(k => k.ToViewModel());
+
+
+            return Json(vms);
         }
 
         [HttpPost("")]

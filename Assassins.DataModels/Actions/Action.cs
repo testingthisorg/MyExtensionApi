@@ -5,13 +5,13 @@ namespace Assassins.DataModels.Actions
 {
     public class Action : IDataModel
     {
+        public long? campaign_insight_id { get; set; }
+        public CampaignInsight CampaignInsight { get; set; }
         public int AaId { get; set; }
         public int action_type_id { get; set; }
         public virtual ActionType action_type { get; set; }
         public double value { get; set; }
         public string Discriminator { get; set; }
-        public int? CampaignInsightId { get; set; }
-        public CampaignInsight CampaignInsight { get; set; }
         public IDataViewModel ToViewModel()
         {
             var vm = new ActionViewModel()
@@ -31,6 +31,7 @@ namespace Assassins.DataModels.Actions
 
     public class ActionViewModel : IDataViewModel
     {
+        public long? campaign_insight_id { get; set; }
         public int AaId { get; set; }
         public int action_type_id { get; set; }
         public virtual ActionTypeViewModel action_type { get; set; }
@@ -40,6 +41,7 @@ namespace Assassins.DataModels.Actions
         {
             var model = new Action()
             {
+                campaign_insight_id = campaign_insight_id,
                 AaId = AaId,
                 action_type_id = action_type_id,
                 value = value,

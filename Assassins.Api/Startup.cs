@@ -2,7 +2,7 @@
 using Assassins.Api.AuthAdapters.Firebase;
 using Assassins.Configuration;
 using Assassins.DataAccess.Contexts;
-using Assassins.DataAccess.Repositories.AaAccounts;
+using Assassins.DataAccess.Repositories.AdAccounts;
 using Assassins.DataAccess.Repositories.AppUsers;
 using Assassins.DataAccess.Repositories.Campaigns;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -95,7 +95,7 @@ namespace Assassins.Api
             });
 
             services.AddScoped<IAppUserRepository, AppUserRepository>();
-            services.AddScoped<IAaAccountRepository, AaAccountRepository>();
+            services.AddScoped<IAdAccountRepository, AdAccountRepository>();
             services.AddScoped<ICampaignRepository, CampaignRepository>();
             // =====================Firebase=============================================
             services.AddScoped<IAuthAdapter, Firebase>();

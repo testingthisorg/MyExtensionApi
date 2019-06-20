@@ -1,8 +1,5 @@
-﻿using System;
+﻿using Assassins.DataModels.Campaigns;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assassins.DataAccess.Repositories.Campaigns
 {
@@ -10,5 +7,11 @@ namespace Assassins.DataAccess.Repositories.Campaigns
     {
 
         BaseRepository Base { get; }
+
+        ICollection<Campaign> GetCampaignsByUserEmail(string email);
+        Campaign GetCampaignById(long campaign_id);
+        ICollection<Campaign> GetCampaigns(int? appUserId = null);
+        void UpdateCampaigns(ICollection<Campaign> toUpdate);
+        void AddCampaigns(ICollection<Campaign> toAdd);
     }
 }

@@ -6,13 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Migrations\20190605220508_begin-building-out-models.cs" />
-    <Compile Remove="Migrations\20190605220508_begin-building-out-models.Designer.cs" />
-    <Compile Remove="Migrations\20190605232757_update-attribution-spec-property.cs" />
-    <Compile Remove="Migrations\20190605232757_update-attribution-spec-property.Designer.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="2.2.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="2.2.3" />

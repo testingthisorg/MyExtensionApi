@@ -5,15 +5,15 @@ namespace Assassins.DataModels.AdAccounts
 {
     public class Business : IDataModel
     {
-        public int AaId { get; set; }
-        public ulong id { get; set; }
+        //public int AaId { get; set; }
+        public long id { get; set; }
         public string name { get; set; }
         public virtual ICollection<AdAccount> AdAccounts { get; set; }
         public IDataViewModel ToViewModel()
         {
             var vm = new BusinessViewModel()
             {
-                AaId = AaId,
+                //AaId = AaId,
                 id = id,
                 name = name
             };
@@ -22,15 +22,15 @@ namespace Assassins.DataModels.AdAccounts
     }
     public class BusinessViewModel : IDataViewModel
     {
-        public int AaId { get; set; }
-        public ulong id { get; set; }
+        //public int AaId { get; set; }
+        public long id { get; set; }
         public string name { get; set; }
 
         public IDataModel ToModel()
         {
             var model = new Business()
             {
-                AaId = AaId,
+                //AaId = AaId,
                 id = id,
                 name = name
             };

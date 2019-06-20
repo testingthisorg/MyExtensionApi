@@ -1,8 +1,8 @@
 ﻿using Assassins.DataModels.Actions;
 using Assassins.DataModels.AdAccounts;
 using Assassins.DataModels.AdSets;
+using Assassins.DataModels.AppUsers;
 using Assassins.DataModels.Campaigns;
-using Assassins.DataModels.Users;
 using Microsoft.EntityFrameworkCore;
 using System;
 using Action = Assassins.DataModels.Actions.Action;
@@ -20,6 +20,7 @@ namespace Assassins.DataAccess.Contexts
         public DbSet<Action> Actions { get; set; }
         public DbSet<AppRole> AppRoles { get; set; }
         public DbSet<AppUser> AppUsers { get; set; }
+        public DbSet<AppUserDataSync> AppUserDataSyncs { get; set; }
 
         public MainContext(DbContextOptions<MainContext> options) : base(options)
         { }
@@ -70,6 +71,12 @@ namespace Assassins.DataAccess.Contexts
                         .HasForeignKey(k => k.AppUserId)
                         .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<AppUser>()
+                        .HasMany(k => k.DataSyncs)
+                        .WithOne(k => k.AppUser)
+                        .HasForeignKey(k => k.AppUserId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<AppUser>()
                         .HasData(new AppUser()
                         {
                             AppUserId = 1,
@@ -103,49 +110,84 @@ namespace Assassins.DataAccess.Contexts
                             IsDeleted = false,
                             CreatedOn = DateTime.Parse("1980-10-20 00:00:00.0000000"),
                             ModifiedOn = DateTime.Parse("1980-10-20 00:00:00.0000000")
+                        },
+                        new AppUser()
+                        {
+                            AppUserId = 3,
+                            AvatarUrl = "https://i0.wp.com/cdn.auth0.com/avatars/jj.png?ssl=1",
+                            ExternalId = "x1EZhRH3tVfwTEsE2f2nHJce4yy2",
+                            Email = "joe.jordan25@gmail.com",
+                            FirstName = "Joe",
+                            LastName = "Jordan",
+                            CreatedBy = "system@assassinsclub.com",
+                            CreatedById = 1,
+                            ModifiedBy = "system@assassinsclub.com",
+                            ModifiedById = 1,
+                            IsSuspended = false,
+                            IsDeleted = false,
+                            CreatedOn = DateTime.Parse("1980-10-20 00:00:00.0000000"),
+                            ModifiedOn = DateTime.Parse("1980-10-20 00:00:00.0000000")
                         });
             #endregion USERS & ROLES
 
             #region Ad Accounts
 
-            modelBuilder.Entity<AdAccount>().HasKey(k => k.AaId);
+            //modelBuilder.Entity<AdAccount>().HasKey(k => k.AaId);
+            modelBuilder.Entity<AdAccount>().HasKey(k => k.account_id);
+            modelBuilder.Entity<AdAccount>()
+                                .Property(k => k.account_id)
+                                .ValueGeneratedNever();
             modelBuilder.Entity<AdAccount>()
                                 .HasMany(k => k.campaigns)
                                 .WithOne(k => k.AdAccount)
-                                .HasForeignKey(k => k.AdAccountId)
+                                .HasForeignKey(k => k.account_id)
                         .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<AdAccount>()
                                 .HasMany(k => k.attribution_spec)
                                 .WithOne(k => k.AdAccount)
-                                .HasForeignKey(k => k.AdAccountId)
+                                .HasForeignKey(k => k.account_id)
                         .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<AdAccount>()
-                                .HasOne(k => k.business)
-                                .WithMany(k => k.AdAccounts)
-                                .HasForeignKey(k => k.BusinessId)
+            //modelBuilder.Entity<AdAccount>()
+            //                    .HasOne(k => k.business)
+            //                    .WithMany(k => k.AdAccounts)
+            //                    .HasForeignKey(k => k.BusinessId)
+            //            .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<Business>().HasKey(k => k.AaId);
+            modelBuilder.Entity<Business>().HasKey(k => k.id);
+            modelBuilder.Entity<Business>()
+                            .Property(k => k.id)
+                            .ValueGeneratedNever();
+            modelBuilder.Entity<Business>()
+                        .HasMany(k => k.AdAccounts)
+                        .WithOne(k => k.business)
+                        .HasForeignKey(k => k.business_id)
                         .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Business>().HasKey(k => k.AaId);
+
             modelBuilder.Entity<AttributionSpec>().HasKey(k => k.AaId);
             #endregion Ad Accounts
 
             #region Campaigns
-            modelBuilder.Entity<Campaign>().HasKey(k => k.AaId);
+            modelBuilder.Entity<Campaign>().HasKey(k => k.id);
+            modelBuilder.Entity<Campaign>()
+                            .Property(k => k.id)
+                            .ValueGeneratedNever();
             modelBuilder.Entity<Campaign>()
                         .HasMany(k => k.CampaignInsights)
                         .WithOne(k => k.Campaign)
-                        .HasForeignKey(k => k.CampaignId)
+                        .HasForeignKey(k => k.campaign_id)
                         .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Campaign>()
                         .HasMany(k => k.adsets)
                         .WithOne(k => k.Campaign)
-                        .HasForeignKey(k => k.CampaignId)
+                        .HasForeignKey(k => k.campaign_id)
                         .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<CampaignInsight>().HasKey(k => k.AaId);
+            modelBuilder.Entity<CampaignInsight>().HasKey(k => k.id);
             modelBuilder.Entity<CampaignInsight>()
                         .HasMany(k => k.actions)
                         .WithOne(k => k.CampaignInsight)
-                        .HasForeignKey(k => k.CampaignInsightId)
+                        .HasForeignKey(k => k.campaign_insight_id)
                         .OnDelete(DeleteBehavior.Restrict);
             #endregion Campaigns
 

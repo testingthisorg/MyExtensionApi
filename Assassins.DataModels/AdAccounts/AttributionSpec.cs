@@ -7,7 +7,7 @@ namespace Assassins.DataModels.AdAccounts
         public int AaId { get; set; }
         public string event_type { get; set; }
         public int window_days { get; set; }
-        public int AdAccountId { get; set; }
+        public long account_id { get; set; }
         public AdAccount AdAccount { get; set; }
         public IDataViewModel ToViewModel()
         {
@@ -26,12 +26,12 @@ namespace Assassins.DataModels.AdAccounts
         public string event_type { get; set; }
         public int window_days { get; set; }
 
-        public int AdAccountId { get; set; }
+        public long account_id { get; set; }
         public IDataModel ToModel()
         {
             var model = new AttributionSpec()
             {
-                AdAccountId = AdAccountId,
+                account_id = account_id,
                 AaId = AaId,
                 event_type = event_type,
                 window_days = window_days

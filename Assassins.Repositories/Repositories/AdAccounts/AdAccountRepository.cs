@@ -3,40 +3,38 @@ using Assassins.DataAccess.Contexts;
 using Assassins.DataModels.AdAccounts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Assassins.DataAccess.Repositories.AaAccounts
+namespace Assassins.DataAccess.Repositories.AdAccounts
 {
-    public class AaAccountRepository : BaseRepository, IAaAccountRepository
+    public class AdAccountRepository : BaseRepository, IAdAccountRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
         private readonly string key = "aa-accounts";
-        public AaAccountRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
+        public AdAccountRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
-        public ICollection<AdAccount> GetAdAccounts(int? appUserId = null)
+        public ICollection<AdAccount> GetAdAccounts(long? owner_id = null)
         {
             List<AdAccount> accounts = null;
-            if (appUserId.HasValue)
+            if (owner_id.HasValue)
             {
                 accounts = _context.AdAccounts
-                                    .Where(k => k.AppUserId == appUserId.Value)
+                                    .AsNoTracking()
+                                    .Where(k => k.owner == owner_id.Value)
                                     .ToList();
             }
             else
             {
-                accounts = _context.AdAccounts.ToList();
+                accounts = _context.AdAccounts.AsNoTracking().ToList();
             }
             return accounts;
         }
 
-        public AdAccount GetAdAccountById(int id)
+        public AdAccount GetAdAccountById(long account_id)
         {
-            var item = _context.AdAccounts.FirstOrDefault(k => k.AaId == id);
+            var item = _context.AdAccounts.FirstOrDefault(k => k.account_id == account_id);
             return item;
         }
 
@@ -53,6 +51,19 @@ namespace Assassins.DataAccess.Repositories.AaAccounts
         public void AddAdAccounts(ICollection<AdAccount> accounts)
         {
             _context.AddRange(accounts);
+        }
+
+        public void UpdateAdAccounts(List<AdAccount> toUpdate)
+        {
+            _context.UpdateRange(toUpdate);
+        }
+
+        public ICollection<long> GetAccountIdsByOwnerId(long owner_id)
+        {
+            var ids = _context
+                        .AdAccounts.Where(k => k.owner == owner_id)
+                        .Select(k => k.account_id);
+            return ids.ToList();
         }
     }
 }

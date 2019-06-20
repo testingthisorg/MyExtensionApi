@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Assassins.Configuration;
-using Assassins.DataAccess.Cache;
+﻿using Assassins.Configuration;
 using Assassins.DataAccess.Contexts;
-using Assassins.DataModels.Users;
+using Assassins.DataModels.AppUsers;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -12,7 +12,7 @@ namespace Assassins.DataAccess.Repositories.AppUsers
     public class AppUserRepository : BaseRepository, IAppUserRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
-        private readonly string key = "app-users";
+       
         public AppUserRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
@@ -24,7 +24,7 @@ namespace Assassins.DataAccess.Repositories.AppUsers
             // add to cache as well
             var users = GetUsers();
             users.Add(user);
-            AppValueCache.Set(key, users.OrderBy(k => k.Email).ToList());
+            //AppValueCache.Set(key, users.OrderBy(k => k.Email).ToList());
 
         }
 
@@ -49,7 +49,7 @@ namespace Assassins.DataAccess.Repositories.AppUsers
             var user = GetUsers().FirstOrDefault(k => k.AppUserId == id);
             return user;
         }
-        public AppUser GetUserByEmail(string email)
+        public AppUser GetAppUserByEmail(string email)
         {
             var lwrEmail = email.ToLower();
             var user = GetUsers().FirstOrDefault(k => k.Email.ToLower() == lwrEmail);
@@ -58,20 +58,20 @@ namespace Assassins.DataAccess.Repositories.AppUsers
         public ICollection<AppUser> GetUsers(bool includeDeleted = false)
         {
             List<AppUser> users = null;
-            if (AppValueCache.Contains(key))
-            {
-                return (List<AppUser>)AppValueCache.Get(key);
-            }
-            else
-            {
+            //if (AppValueCache.Contains(key))
+            //{
+            //    return (List<AppUser>)AppValueCache.Get(key);
+            //}
+            //else
+            //{
                 users = _context.AppUsers
                                     .AsNoTracking()
                                     .Include(k => k.UserRoles)
                                         .ThenInclude(k => k.Role)
                                     .OrderBy(k => k.Email)
                                     .ToList();
-                AppValueCache.Set(key, users);
-            }
+            //    AppValueCache.Set(key, users);
+            //}
             if (!includeDeleted)
             {
                 users = users.Where(k => k.IsDeleted == false).ToList();
@@ -104,6 +104,34 @@ namespace Assassins.DataAccess.Repositories.AppUsers
             user.LastName = lastName;
             user.AdAssassinId = adAssassinId;
             return user;
+        }
+
+        public ICollection<AppUserDataSync> GetUserDataSyncStatus(int id)
+        {
+            var items = _context.AppUserDataSyncs
+                                .Where(k => k.AppUserId == id && !k.AllCompleted)
+                                .ToList();
+            return items;
+        }
+
+        public void AddDataSyncStatus(AppUserDataSync newDs)
+        {
+            _context.AppUserDataSyncs.Add(newDs);
+        }
+
+        public AppUserDataSync GetCurrentDataSync(int appUserId)
+        {
+            var maxTime = _context.AppUserDataSyncs
+                             .Where(k => k.AppUserId == appUserId)
+                             .Max(k => k.StartTime);
+            var item = _context.AppUserDataSyncs
+                                .FirstOrDefault(k => k.AppUserId == appUserId && k.StartTime == maxTime);
+            return item;
+        }
+
+        public void UpdateDataSync(AppUserDataSync dataSyncEntity)
+        {
+            _context.AppUserDataSyncs.Update(dataSyncEntity);
         }
     }
 }

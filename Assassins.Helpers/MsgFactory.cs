@@ -18,7 +18,7 @@ namespace Assassins.Helpers
             return new
             {
                 Type = MessageType.Success,
-                Text = text
+                Text = string.IsNullOrEmpty(text) ? "Success!" : text
             };
         }
         public static object Error(Exception ex)

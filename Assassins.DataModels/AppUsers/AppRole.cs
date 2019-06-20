@@ -1,7 +1,7 @@
 ﻿using Assassins.DataModels.Interfaces;
 using System.Collections.Generic;
 
-namespace Assassins.DataModels.Users
+namespace Assassins.DataModels.AppUsers
 {
     public class AppRole : IDataModel
     {

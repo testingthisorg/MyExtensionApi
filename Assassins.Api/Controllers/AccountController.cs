@@ -1,16 +1,15 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Assassins.Api.AuthAdapters;
+using Assassins.DataAccess.Repositories.AppUsers;
+using Assassins.DataModels.AppUsers;
+using Assassins.Helpers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Assassins.Api.AuthAdapters;
-using Assassins.DataAccess.Repositories.AppUsers;
-using Assassins.DataModels.Users;
-using Assassins.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-
 
 namespace Assassins.Api.Controllers
 {
@@ -42,7 +41,7 @@ namespace Assassins.Api.Controllers
                     var user = _userRepo.GetUserByExternalId(responseVM.ExternalId);
                     if (user == null)
                     {
-                        user = _userRepo.GetUserByEmail(vm.Email);
+                        user = _userRepo.GetAppUserByEmail(vm.Email);
                         if (user == null)
                         {
                             throw new Exception("Unable to locate user");
