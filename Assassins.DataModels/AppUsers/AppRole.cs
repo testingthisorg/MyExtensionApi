@@ -9,7 +9,7 @@ namespace Assassins.DataModels.AppUsers
         public string Name { get; set; }
         // public List<AppUserRole> RoleUsers { get; set; }
 
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var item = new RoleViewModel()
             {

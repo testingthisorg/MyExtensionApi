@@ -48,7 +48,7 @@ namespace Assassins.DataModels.Campaigns
 
         #endregion // FB Properties ===========================
 
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new CampaignInsightViewModel()
             {

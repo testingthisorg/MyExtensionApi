@@ -47,28 +47,36 @@ namespace Assassins.Api.Controllers
             var vm = model.ToViewModel();
             return Json(vm);
         }
-        [HttpGet("{id}/sync-status")]
-        public JsonResult GetUserDataSyncStatus(int id)
+        [HttpGet("{userId}/sync-status")]
+        public JsonResult GetUserDataSyncStatus(long userId)
         {
             var dataSyncItems = new List<AppUserDataSync>();
-
-            var models = _userRepo.GetUserDataSyncStatus(id);
+            var email = UserClaimHelpers.Email(User.Identity);
+            var user = _userRepo.GetAppUserByEmail(email);
+            if (user == null)
+                throw new Exception("Unable to locate user '" + email + "'!");
+            if (!user.id.HasValue)
+            {
+                user.id = userId;
+                _userRepo.UpdateUser(user);
+                _userRepo.Base.SaveAll(User);
+            }
+            var models = _userRepo.GetUserDataSyncStatus(user.AppUserId);
             if (!models.Any(k => k.StartTime.Date == DateTime.UtcNow.Date))
             {
                 var newDs = new AppUserDataSync()
                 {
                     StartTime = DateTime.UtcNow,
-                    AppUserId = id,
-
+                    AppUserId = user.AppUserId,
                 };
                 models.Add(newDs);
                 _userRepo.AddDataSyncStatus(newDs);
                 _userRepo.Base.SaveAll(User);
             }
 
-            var vms = models.OrderBy(k => k.StartTime).Select(k => k.ToViewModel());
-
-
+            var vms = models
+                        .OrderByDescending(k => k.StartTime)
+                        .Select(k => k.ToViewModel());
             return Json(vms);
         }
 

@@ -9,7 +9,7 @@ namespace Assassins.DataModels.AdAccounts
         public long id { get; set; }
         public string name { get; set; }
         public virtual ICollection<AdAccount> AdAccounts { get; set; }
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new BusinessViewModel()
             {

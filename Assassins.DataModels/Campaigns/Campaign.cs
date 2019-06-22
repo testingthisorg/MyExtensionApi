@@ -1,41 +1,30 @@
 ﻿using Assassins.DataModels.AdAccounts;
+using Assassins.DataModels.Ads;
 using Assassins.DataModels.AdSets;
 using Assassins.DataModels.AppUsers;
 using Assassins.DataModels.Interfaces;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Assassins.DataModels.Campaigns
 {
-    public class Campaign : IDataModel
+    public class Campaign : IDataModel, IHistoryData
     {
+        public DateTime DateRecorded { get; set; }
+        public long AppUserDataSyncId { get; set; }
+        public virtual AppUserDataSync AppUserDataSync { get; set; }
 
-        public static ICollection<Campaign> ParseCollection(List<object> campaigns)
-        {
-            var parsedItems = new List<Campaign>();
-            foreach (var item in campaigns)
-            {
-                var jObj = item as JObject;
-               // var props = jObj.Properties().ToDictionary(k => k.Name, m => m.Value);
-                var accnt = jObj.ToObject<Campaign>();
-                parsedItems.Add(accnt);
-            }
-            return parsedItems;
-        }
-
-        //public int AaId { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime RecordDate { get; set; }
         public int AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
 
-        //public int AdAccountId { get; set; }
+
         public virtual AdAccount AdAccount { get; set; }
 
         public virtual ICollection<CampaignInsight> CampaignInsights { get; set; }
-        public ICollection<AdSet> adsets { get; set; }
+        public virtual ICollection<AdSet> adsets { get; set; }
+        public virtual ICollection<Ad> ads { get; set; }
 
         #region // FB Properties ===========================
         public long id { get; set; }
@@ -58,7 +47,7 @@ namespace Assassins.DataModels.Campaigns
 
         #endregion  // FB Properties ===========================
 
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new CampaignViewModel()
             {

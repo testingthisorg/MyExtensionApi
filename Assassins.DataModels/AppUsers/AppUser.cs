@@ -32,7 +32,7 @@ namespace Assassins.DataModels.AppUsers
         public string CreatedBy { get; set; }
         public string ModifiedBy { get; set; }
 
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var item = new AppUserViewModel()
             {

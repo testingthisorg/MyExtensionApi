@@ -1,6 +1,7 @@
 ﻿using Assassins.DataAccess.Repositories.AdAccounts;
 using Assassins.DataAccess.Repositories.AppUsers;
 using Assassins.DataModels.AdAccounts;
+using Assassins.DataModels.Interfaces;
 using Assassins.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -59,36 +60,43 @@ namespace Assassins.Api.Controllers
         {
             try
             {
-                var newAccounts = AdAccount.ParseCollection(accounts);
+                var newAccounts = IDataModel.ParseCollection<AdAccount>(accounts);
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
-                var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
 
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
-                //foreach (var item in newAccounts)
-                //{
-                //    item.AppUserId = user.AppUserId;
-                //}
 
-                // reconcile accounts
+                var userOwnedAccounts = newAccounts.Where(k => k.owner == user.id).ToList();
+                var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
+                var dateRecorded = DateTime.UtcNow;
+                foreach (var item in userOwnedAccounts)
+                {
+                    item.DateRecorded = dateRecorded;
+                    item.AppUserDataSyncId = dataSyncEntity.Id;
+                }
 
-                var currentAccounts = _repo.GetAdAccounts(user.AppUserId);
+                //  var currentAccounts = _repo.GetAdAccountsByOwnerId(user.AppUserId);
+                var currentAccounts = _repo.GetAdAccountsByOwnerId(user.id.Value);
 
                 var currAccntIds = currentAccounts.Select(k => k.account_id).ToList();
-                var newAccntIds = newAccounts.Select(k => k.account_id).ToList();
+                var newAccntIds = userOwnedAccounts.Select(k => k.account_id).ToList();
 
                 var toAddIds = newAccntIds.Except(currAccntIds).ToList();
                 var toUpdateIds = newAccntIds.Intersect(currAccntIds).ToList();
                 var toDeleteIds = currAccntIds.Except(newAccntIds).ToList();
 
 
-                var toAdd = newAccounts.Where(k => toAddIds.Contains(k.account_id)).ToList();
-                var toUpdate = newAccounts.Where(k => toUpdateIds.Contains(k.account_id)).ToList();
+                var toAdd = userOwnedAccounts.Where(k => toAddIds.Contains(k.account_id)).ToList();
+                var toUpdate = userOwnedAccounts.Where(k => toUpdateIds.Contains(k.account_id)).ToList();
                 var toDelete = currentAccounts.Where(k => toDeleteIds.Contains(k.account_id)).ToList();
 
                 dataSyncEntity.AdAccountsCompleted = true;
 
+                foreach (var item in toAdd)
+                    item.AppUserId = user.AppUserId;
+                foreach (var item in toUpdate)
+                    item.AppUserId = user.AppUserId;
                 _repo.AddAdAccounts(toAdd);
                 _repo.UpdateAdAccounts(toUpdate);
                 _userRepo.UpdateDataSync(dataSyncEntity);

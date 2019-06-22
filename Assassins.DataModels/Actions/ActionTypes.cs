@@ -8,7 +8,7 @@ namespace Assassins.DataModels.Actions
         public int AaId { get; set; }
         public string action_type { get; set; }
         public virtual ICollection<Action> Actions { get; set; }
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new ActionTypeViewModel()
             {

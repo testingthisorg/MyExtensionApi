@@ -20,9 +20,16 @@ namespace Assassins.DataAccess.Repositories.Campaigns
 
         public ICollection<Campaign> GetCampaignsByUserEmail(string email)
         {
-            throw new NotImplementedException();
+            var items = _context.AdAccounts.Where(k => k.AppUser.Email == email)
+                                .SelectMany(k => k.campaigns).ToList();
+            return items;
         }
-
+        public ICollection<long> GetCampaignIdsByUserEmail(string email)
+        {
+            var items = _context.AdAccounts.Where(k => k.AppUser.Email == email)
+                                .SelectMany(k => k.campaigns.Select(m => m.id)).ToList();
+            return items;
+        }
         public Campaign GetCampaignById(long campaign_id)
         {
             throw new NotImplementedException();
@@ -53,6 +60,13 @@ namespace Assassins.DataAccess.Repositories.Campaigns
         public void AddCampaigns(ICollection<Campaign> toAdd)
         {
             _context.Campaigns.AddRange(toAdd);
+        }
+
+        public ICollection<long> GetCampaignIdsByOwnerId(long owner_id)
+        {
+            var cmps = _context.Campaigns.Where(k => k.AppUser.id == owner_id)
+                                .Select(k => k.id).ToList();
+            return cmps;
         }
     }
 }

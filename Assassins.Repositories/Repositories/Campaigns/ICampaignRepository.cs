@@ -11,7 +11,9 @@ namespace Assassins.DataAccess.Repositories.Campaigns
         ICollection<Campaign> GetCampaignsByUserEmail(string email);
         Campaign GetCampaignById(long campaign_id);
         ICollection<Campaign> GetCampaigns(int? appUserId = null);
+        ICollection<long> GetCampaignIdsByUserEmail(string email);
         void UpdateCampaigns(ICollection<Campaign> toUpdate);
         void AddCampaigns(ICollection<Campaign> toAdd);
+        ICollection<long> GetCampaignIdsByOwnerId(long owner_id);
     }
 }

@@ -1,5 +1,13 @@
-﻿using Assassins.DataModels.Interfaces;
+﻿using Assassins.DataModels.AdAccounts;
+using Assassins.DataModels.AdImages;
+using Assassins.DataModels.Ads;
+using Assassins.DataModels.AdSets;
+using Assassins.DataModels.Campaigns;
+using Assassins.DataModels.Creatives;
+using Assassins.DataModels.Interfaces;
+using Assassins.DataModels.LeadForms;
 using System;
+using System.Collections.Generic;
 
 namespace Assassins.DataModels.AppUsers
 {
@@ -16,6 +24,16 @@ namespace Assassins.DataModels.AppUsers
         public bool AdsCompleted { get; set; }
         public bool CreativesCompleted { get; set; }
         public bool LeadFormsCompleted { get; set; }
+
+        public virtual ICollection<AdAccount> AdAccounts { get; set; }
+        public virtual ICollection<Campaign> Campaigns { get; set; }
+        public virtual ICollection<AdSet> AdSets { get; set; }
+        public virtual ICollection<Ad> Ads { get; set; }
+        public virtual ICollection<AdCreative> AdCreatives { get; set; }
+        public virtual ICollection<AdImage> AdImages { get; set; }
+        public virtual ICollection<LeadForm> LeadForms { get; set; }
+
+
         public bool AllCompleted
         {
             get
@@ -28,7 +46,7 @@ namespace Assassins.DataModels.AppUsers
                         LeadFormsCompleted;
             }
         }
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new AppUserDataSyncViewModel()
             {

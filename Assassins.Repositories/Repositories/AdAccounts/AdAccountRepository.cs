@@ -15,23 +15,26 @@ namespace Assassins.DataAccess.Repositories.AdAccounts
         public AdAccountRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
-        public ICollection<AdAccount> GetAdAccounts(long? owner_id = null)
+        public ICollection<AdAccount> GetAdAccountsByOwnerId(long owner_id)
         {
             List<AdAccount> accounts = null;
-            if (owner_id.HasValue)
-            {
-                accounts = _context.AdAccounts
-                                    .AsNoTracking()
-                                    .Where(k => k.owner == owner_id.Value)
-                                    .ToList();
-            }
-            else
-            {
-                accounts = _context.AdAccounts.AsNoTracking().ToList();
-            }
+            accounts = _context.AdAccounts
+                                .AsNoTracking()
+                                .Where(k => k.owner == owner_id)
+                                .ToList();
+
             return accounts;
         }
+        public ICollection<AdAccount> GetAdAccountsByUserId(int appUserId)
+        {
+            List<AdAccount> accounts = null;
+            accounts = _context.AdAccounts
+                                .AsNoTracking()
+                                .Where(k => k.AppUserId == appUserId)
+                                .ToList();
 
+            return accounts;
+        }
         public AdAccount GetAdAccountById(long account_id)
         {
             var item = _context.AdAccounts.FirstOrDefault(k => k.account_id == account_id);

@@ -12,7 +12,7 @@ namespace Assassins.DataModels.Actions
         public virtual ActionType action_type { get; set; }
         public double value { get; set; }
         public string Discriminator { get; set; }
-        public IDataViewModel ToViewModel()
+        public override IDataViewModel ToViewModel()
         {
             var vm = new ActionViewModel()
             {

@@ -2,6 +2,7 @@
 using Assassins.Api.AuthAdapters.Firebase;
 using Assassins.Configuration;
 using Assassins.DataAccess.Contexts;
+using Assassins.DataAccess.Repositories;
 using Assassins.DataAccess.Repositories.AdAccounts;
 using Assassins.DataAccess.Repositories.AppUsers;
 using Assassins.DataAccess.Repositories.Campaigns;
@@ -97,6 +98,10 @@ namespace Assassins.Api
             services.AddScoped<IAppUserRepository, AppUserRepository>();
             services.AddScoped<IAdAccountRepository, AdAccountRepository>();
             services.AddScoped<ICampaignRepository, CampaignRepository>();
+            services.AddScoped<IAdSetRepository, AdSetRepository>();
+            services.AddScoped<IAdRepository, AdRepository>();
+            services.AddScoped<IAdCreativeRepository, AdCreativeRepository>();
+            services.AddScoped<ILeadFormRepository, LeadFormRepository>();
             // =====================Firebase=============================================
             services.AddScoped<IAuthAdapter, Firebase>();
             services

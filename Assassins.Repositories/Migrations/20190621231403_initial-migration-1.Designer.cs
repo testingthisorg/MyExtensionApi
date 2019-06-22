@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Assassins.DataAccess.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20190618172411_initial-migration")]
-    partial class initialmigration
+    [Migration("20190621231403_initial-migration-1")]
+    partial class initialmigration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -64,11 +64,11 @@ namespace Assassins.DataAccess.Migrations
                 {
                     b.Property<long>("account_id");
 
+                    b.Property<long>("AppUserDataSyncId");
+
                     b.Property<int>("AppUserId");
 
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<DateTime>("RecordDate");
+                    b.Property<DateTime>("DateRecorded");
 
                     b.Property<int>("account_status");
 
@@ -96,8 +96,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<int>("disable_reason");
 
-                    b.Property<decimal>("end_advertiser")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<long?>("end_advertiser");
 
                     b.Property<string>("end_advertiser_name");
 
@@ -109,8 +108,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("name");
 
-                    b.Property<decimal>("owner")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<long>("owner");
 
                     b.Property<int>("spend_cap");
 
@@ -122,6 +120,8 @@ namespace Assassins.DataAccess.Migrations
 
                     b.HasKey("account_id");
 
+                    b.HasIndex("AppUserDataSyncId");
+
                     b.HasIndex("AppUserId");
 
                     b.HasIndex("business_id");
@@ -129,23 +129,73 @@ namespace Assassins.DataAccess.Migrations
                     b.ToTable("AdAccounts");
                 });
 
-            modelBuilder.Entity("Assassins.DataModels.AdAccounts.AttributionSpec", b =>
+            modelBuilder.Entity("Assassins.DataModels.AdAccounts.AdAccountHistory", b =>
                 {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("AppUserDataSyncId");
 
                     b.Property<long>("account_id");
 
-                    b.Property<string>("event_type");
+                    b.Property<int>("AppUserId");
 
-                    b.Property<int>("window_days");
+                    b.Property<DateTime>("DateRecorded");
 
-                    b.HasKey("AaId");
+                    b.Property<int>("account_status");
 
-                    b.HasIndex("account_id");
+                    b.Property<double>("age");
 
-                    b.ToTable("AttributionSpecs");
+                    b.Property<long>("amount_spent");
+
+                    b.Property<double>("balance");
+
+                    b.Property<string>("business_city");
+
+                    b.Property<string>("business_country_code");
+
+                    b.Property<long?>("business_id");
+
+                    b.Property<string>("business_name");
+
+                    b.Property<string>("business_street");
+
+                    b.Property<string>("business_street2");
+
+                    b.Property<long?>("businessid");
+
+                    b.Property<DateTime>("created_time");
+
+                    b.Property<string>("currency");
+
+                    b.Property<int>("disable_reason");
+
+                    b.Property<long?>("end_advertiser");
+
+                    b.Property<string>("end_advertiser_name");
+
+                    b.Property<int>("fb_entity");
+
+                    b.Property<int>("min_campaign_group_spend_cap");
+
+                    b.Property<int>("min_daily_budget");
+
+                    b.Property<string>("name");
+
+                    b.Property<long>("owner");
+
+                    b.Property<int>("spend_cap");
+
+                    b.Property<int>("timezone_id");
+
+                    b.Property<string>("timezone_name");
+
+                    b.Property<int>("timezone_offset_hours_utc");
+
+                    b.HasKey("AppUserDataSyncId", "account_id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("businessid");
+
+                    b.ToTable("AdAccountHistory");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.Business", b =>
@@ -159,19 +209,216 @@ namespace Assassins.DataAccess.Migrations
                     b.ToTable("Business");
                 });
 
+            modelBuilder.Entity("Assassins.DataModels.AdImages.AdImage", b =>
+                {
+                    b.Property<string>("id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<long>("AppUserDataSyncId");
+
+                    b.Property<DateTime>("DateRecorded");
+
+                    b.Property<long>("account_id");
+
+                    b.Property<DateTime>("created_time");
+
+                    b.Property<string>("hash");
+
+                    b.Property<int>("height");
+
+                    b.Property<bool>("is_associated_creatives_in_adgroups");
+
+                    b.Property<string>("name");
+
+                    b.Property<int>("original_height");
+
+                    b.Property<int>("original_width");
+
+                    b.Property<string>("permalink_url");
+
+                    b.Property<string>("status");
+
+                    b.Property<DateTime>("update_time");
+
+                    b.Property<string>("url");
+
+                    b.Property<string>("url_128");
+
+                    b.Property<int>("width");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserDataSyncId");
+
+                    b.ToTable("AdImages");
+                });
+
             modelBuilder.Entity("Assassins.DataModels.AdSets.AdSet", b =>
                 {
-                    b.Property<int>("AaId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("id");
+
+                    b.Property<long>("AppUserDataSyncId");
+
+                    b.Property<DateTime>("DateRecorded");
+
+                    b.Property<long>("account_id");
+
+                    b.Property<string>("bid_strategy");
+
+                    b.Property<string>("billing_event");
+
+                    b.Property<int>("budget_remaining");
 
                     b.Property<long>("campaign_id");
 
-                    b.HasKey("AaId");
+                    b.Property<string>("configured_status");
+
+                    b.Property<DateTime>("created_time");
+
+                    b.Property<int>("daily_budget");
+
+                    b.Property<string>("destination_type");
+
+                    b.Property<string>("effective_status");
+
+                    b.Property<DateTime>("end_time");
+
+                    b.Property<bool>("is_dynamic_creative");
+
+                    b.Property<int>("lifetime_budget");
+
+                    b.Property<int>("lifetime_imps");
+
+                    b.Property<string>("name");
+
+                    b.Property<string>("optimization_goal");
+
+                    b.Property<string>("optimization_sub_event");
+
+                    b.Property<bool>("recurring_budget_semantics");
+
+                    b.Property<long>("source_adset_id");
+
+                    b.Property<DateTime>("start_time");
+
+                    b.Property<string>("status");
+
+                    b.Property<DateTime>("updated_time");
+
+                    b.Property<bool>("use_new_app_click");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserDataSyncId");
+
+                    b.HasIndex("account_id");
 
                     b.HasIndex("campaign_id");
 
                     b.ToTable("AdSets");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.Geolocation", b =>
+                {
+                    b.Property<long>("adset_id");
+
+                    b.Property<string>("location_types");
+
+                    b.HasKey("adset_id");
+
+                    b.ToTable("Geolocations");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.GeolocationRegionMap", b =>
+                {
+                    b.Property<long>("adset_id");
+
+                    b.Property<int>("key");
+
+                    b.HasKey("adset_id", "key");
+
+                    b.HasIndex("key");
+
+                    b.ToTable("GeolocationRegionMaps");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.Region", b =>
+                {
+                    b.Property<int>("key");
+
+                    b.Property<string>("country");
+
+                    b.Property<string>("name");
+
+                    b.HasKey("key");
+
+                    b.ToTable("Regions");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.Targeting", b =>
+                {
+                    b.Property<long>("adset_id");
+
+                    b.Property<int>("age_max");
+
+                    b.Property<int>("age_min");
+
+                    b.Property<string>("device_platforms");
+
+                    b.Property<string>("facebook_positions");
+
+                    b.Property<string>("instagram_positions");
+
+                    b.Property<string>("publisher_platforms");
+
+                    b.HasKey("adset_id");
+
+                    b.ToTable("Targeting");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Ads.Ad", b =>
+                {
+                    b.Property<long>("id");
+
+                    b.Property<long>("AppUserDataSyncId");
+
+                    b.Property<DateTime>("DateRecorded");
+
+                    b.Property<long>("account_id");
+
+                    b.Property<long>("adset_id");
+
+                    b.Property<string>("bid_type");
+
+                    b.Property<long>("campaign_id");
+
+                    b.Property<string>("configured_status");
+
+                    b.Property<DateTime>("created_time");
+
+                    b.Property<string>("effective_status");
+
+                    b.Property<long>("last_updated_by_app_id");
+
+                    b.Property<string>("name");
+
+                    b.Property<long>("source_ad_id");
+
+                    b.Property<string>("status");
+
+                    b.Property<DateTime>("updated_time");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserDataSyncId");
+
+                    b.HasIndex("account_id");
+
+                    b.HasIndex("adset_id");
+
+                    b.HasIndex("campaign_id");
+
+                    b.ToTable("Ads");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AppUsers.AppRole", b =>
@@ -242,6 +489,8 @@ namespace Assassins.DataAccess.Migrations
                     b.Property<int>("ModifiedById");
 
                     b.Property<DateTime>("ModifiedOn");
+
+                    b.Property<long?>("id");
 
                     b.HasKey("AppUserId");
 
@@ -329,7 +578,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.ToTable("AppUserDataSync");
+                    b.ToTable("AppUserDataSyncs");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AppUsers.AppUserRole", b =>
@@ -361,9 +610,13 @@ namespace Assassins.DataAccess.Migrations
                 {
                     b.Property<long>("id");
 
+                    b.Property<long>("AppUserDataSyncId");
+
                     b.Property<int>("AppUserId");
 
                     b.Property<DateTime>("CreatedOn");
+
+                    b.Property<DateTime>("DateRecorded");
 
                     b.Property<DateTime>("RecordDate");
 
@@ -389,8 +642,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("objective");
 
-                    b.Property<decimal>("source_campaign_id")
-                        .HasConversion(new ValueConverter<decimal, decimal>(v => default(decimal), v => default(decimal), new ConverterMappingHints(precision: 20, scale: 0)));
+                    b.Property<long?>("source_campaign_id");
 
                     b.Property<DateTime>("start_time");
 
@@ -401,6 +653,8 @@ namespace Assassins.DataAccess.Migrations
                     b.Property<DateTime?>("updated_time");
 
                     b.HasKey("id");
+
+                    b.HasIndex("AppUserDataSyncId");
 
                     b.HasIndex("AppUserId");
 
@@ -480,6 +734,92 @@ namespace Assassins.DataAccess.Migrations
                     b.HasIndex("campaign_id");
 
                     b.ToTable("CampaignInsights");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Creatives.AdCreative", b =>
+                {
+                    b.Property<long>("id");
+
+                    b.Property<string>("AdImageid");
+
+                    b.Property<long>("AppUserDataSyncId");
+
+                    b.Property<DateTime>("DateRecorded");
+
+                    b.Property<long>("account_id");
+
+                    b.Property<string>("adimage_id");
+
+                    b.Property<string>("body");
+
+                    b.Property<string>("call_to_action_type");
+
+                    b.Property<long?>("effective_instagram_story_id");
+
+                    b.Property<string>("effective_object_story_id");
+
+                    b.Property<string>("image_hash");
+
+                    b.Property<string>("image_url");
+
+                    b.Property<long?>("instagram_actor_id");
+
+                    b.Property<string>("instagram_permalink_url");
+
+                    b.Property<long?>("instagram_story_id");
+
+                    b.Property<long?>("link_og_id");
+
+                    b.Property<string>("link_url");
+
+                    b.Property<string>("messenger_sponsored_message");
+
+                    b.Property<string>("name");
+
+                    b.Property<long?>("object_id");
+
+                    b.Property<string>("object_story_id");
+
+                    b.Property<string>("object_type");
+
+                    b.Property<string>("object_url");
+
+                    b.Property<string>("status");
+
+                    b.Property<string>("template_url");
+
+                    b.Property<string>("thumbnail_url");
+
+                    b.Property<string>("title");
+
+                    b.Property<string>("url_tags");
+
+                    b.Property<long?>("video_id");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AdImageid");
+
+                    b.HasIndex("AppUserDataSyncId");
+
+                    b.HasIndex("account_id");
+
+                    b.ToTable("AdCreatives");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.LeadForms.LeadForm", b =>
+                {
+                    b.Property<long>("id");
+
+                    b.Property<long>("AppUserDataSyncId");
+
+                    b.Property<DateTime>("DateRecorded");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("AppUserDataSyncId");
+
+                    b.ToTable("LeadForms");
                 });
 
             modelBuilder.Entity("Assassins.DataModels.Actions.CostPer10SecVideoView", b =>
@@ -609,6 +949,11 @@ namespace Assassins.DataAccess.Migrations
 
             modelBuilder.Entity("Assassins.DataModels.AdAccounts.AdAccount", b =>
                 {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("AdAccounts")
+                        .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
                         .WithMany("AdAccounts")
                         .HasForeignKey("AppUserId")
@@ -620,18 +965,89 @@ namespace Assassins.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
-            modelBuilder.Entity("Assassins.DataModels.AdAccounts.AttributionSpec", b =>
+            modelBuilder.Entity("Assassins.DataModels.AdAccounts.AdAccountHistory", b =>
                 {
-                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
-                        .WithMany("attribution_spec")
-                        .HasForeignKey("account_id")
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
+                        .WithMany()
+                        .HasForeignKey("AppUserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Assassins.DataModels.AdAccounts.Business", "business")
+                        .WithMany()
+                        .HasForeignKey("businessid");
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdImages.AdImage", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("AdImages")
+                        .HasForeignKey("AppUserDataSyncId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdSets.AdSet", b =>
                 {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("AdSets")
+                        .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
+                        .WithMany("adsets")
+                        .HasForeignKey("account_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
                         .WithMany("adsets")
+                        .HasForeignKey("campaign_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdSets.Targeting", "targeting")
+                        .WithOne("AdSet")
+                        .HasForeignKey("Assassins.DataModels.AdSets.AdSet", "id")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.Geolocation", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AdSets.Targeting", "Targeting")
+                        .WithOne("geo_locations")
+                        .HasForeignKey("Assassins.DataModels.AdSets.Geolocation", "adset_id")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.AdSets.GeolocationRegionMap", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AdSets.Geolocation", "GeoLocation")
+                        .WithMany("region_maps")
+                        .HasForeignKey("adset_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdSets.Region", "Region")
+                        .WithMany("GeoLocationRegionMaps")
+                        .HasForeignKey("key")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Ads.Ad", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("Ads")
+                        .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
+                        .WithMany("ads")
+                        .HasForeignKey("account_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdSets.AdSet", "AdSet")
+                        .WithMany("Ads")
+                        .HasForeignKey("adset_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
+                        .WithMany("ads")
                         .HasForeignKey("campaign_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -659,6 +1075,11 @@ namespace Assassins.DataAccess.Migrations
 
             modelBuilder.Entity("Assassins.DataModels.Campaigns.Campaign", b =>
                 {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("Campaigns")
+                        .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("Assassins.DataModels.AppUsers.AppUser", "AppUser")
                         .WithMany("Campaigns")
                         .HasForeignKey("AppUserId")
@@ -675,6 +1096,31 @@ namespace Assassins.DataAccess.Migrations
                     b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
                         .WithMany("CampaignInsights")
                         .HasForeignKey("campaign_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.Creatives.AdCreative", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AdImages.AdImage", "AdImage")
+                        .WithMany("AdCreatives")
+                        .HasForeignKey("AdImageid");
+
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("AdCreatives")
+                        .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
+                        .WithMany("adcreatives")
+                        .HasForeignKey("account_id")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
+            modelBuilder.Entity("Assassins.DataModels.LeadForms.LeadForm", b =>
+                {
+                    b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
+                        .WithMany("LeadForms")
+                        .HasForeignKey("AppUserDataSyncId")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618

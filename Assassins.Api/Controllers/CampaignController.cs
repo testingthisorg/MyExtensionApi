@@ -3,6 +3,7 @@ using Assassins.DataAccess.Repositories.AppUsers;
 using Assassins.DataAccess.Repositories.Campaigns;
 using Assassins.DataModels.AppUsers;
 using Assassins.DataModels.Campaigns;
+using Assassins.DataModels.Interfaces;
 using Assassins.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -51,7 +52,14 @@ namespace Assassins.Api.Controllers
             var vm = model.ToViewModel();
             return Json(vm);
         }
-
+        [HttpGet("{owner_id}/campaign-ids")]
+        public JsonResult GetCampaignIds(long owner_id)
+        {
+          //  var email = UserClaimHelpers.Email(User.Identity);
+          //  var ids = _repo.GetCampaignIdsByUserEmail(email);
+            var ids = _repo.GetCampaignIdsByOwnerId(owner_id);
+            return Json(ids);
+        }
         [HttpPost("")]
         public JsonResult ProcessCampaigns([FromBody]List<object> campaigns)
         {
@@ -61,12 +69,16 @@ namespace Assassins.Api.Controllers
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
-                var newCampaigns = Campaign.ParseCollection(campaigns);
+                var newCampaigns = IDataModel.ParseCollection<Campaign>(campaigns);
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
+
+                var dateRecorded = DateTime.UtcNow;
                 foreach (var item in newCampaigns)
                 {
                     item.AppUserId = user.AppUserId;
+                    item.AppUserDataSyncId = dataSyncEntity.Id;
+                    item.RecordDate = dateRecorded;
                 }
 
                 // reconcile accounts
