@@ -87,23 +87,6 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Targeting",
-                columns: table => new
-                {
-                    adset_id = table.Column<long>(nullable: false),
-                    age_max = table.Column<int>(nullable: false),
-                    age_min = table.Column<int>(nullable: false),
-                    publisher_platforms = table.Column<string>(nullable: true),
-                    facebook_positions = table.Column<string>(nullable: true),
-                    instagram_positions = table.Column<string>(nullable: true),
-                    device_platforms = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Targeting", x => x.adset_id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AppUserDataSyncs",
                 columns: table => new
                 {
@@ -155,13 +138,13 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AdAccountHistory",
+                name: "_AdAccountHistory",
                 columns: table => new
                 {
                     AppUserDataSyncId = table.Column<long>(nullable: false),
                     account_id = table.Column<long>(nullable: false),
-                    AppUserId = table.Column<int>(nullable: false),
                     DateRecorded = table.Column<DateTime>(nullable: false),
+                    AppUserId = table.Column<int>(nullable: false),
                     amount_spent = table.Column<long>(nullable: false),
                     account_status = table.Column<int>(nullable: false),
                     age = table.Column<double>(nullable: false),
@@ -190,15 +173,21 @@ namespace Assassins.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_AdAccountHistory", x => new { x.AppUserDataSyncId, x.account_id });
+                    table.PrimaryKey("PK__AdAccountHistory", x => new { x.AppUserDataSyncId, x.account_id });
                     table.ForeignKey(
-                        name: "FK_AdAccountHistory_AppUsers_AppUserId",
+                        name: "FK__AdAccountHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK__AdAccountHistory_AppUsers_AppUserId",
                         column: x => x.AppUserId,
                         principalTable: "AppUsers",
                         principalColumn: "AppUserId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_AdAccountHistory_Business_businessid",
+                        name: "FK__AdAccountHistory_Business_businessid",
                         column: x => x.businessid,
                         principalTable: "Business",
                         principalColumn: "id",
@@ -206,20 +195,217 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Geolocations",
+                name: "_AdCreativeHistory",
                 columns: table => new
                 {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    account_id = table.Column<long>(nullable: false),
+                    body = table.Column<string>(nullable: true),
+                    call_to_action_type = table.Column<string>(nullable: true),
+                    effective_object_story_id = table.Column<string>(nullable: true),
+                    image_hash = table.Column<string>(nullable: true),
+                    image_url = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true),
+                    adimage_id = table.Column<string>(nullable: true),
+                    effective_instagram_story_id = table.Column<long>(nullable: true),
+                    instagram_actor_id = table.Column<long>(nullable: true),
+                    instagram_permalink_url = table.Column<string>(nullable: true),
+                    instagram_story_id = table.Column<long>(nullable: true),
+                    link_og_id = table.Column<long>(nullable: true),
+                    link_url = table.Column<string>(nullable: true),
+                    messenger_sponsored_message = table.Column<string>(nullable: true),
+                    object_id = table.Column<long>(nullable: true),
+                    object_story_id = table.Column<string>(nullable: true),
+                    object_type = table.Column<string>(nullable: true),
+                    object_url = table.Column<string>(nullable: true),
+                    status = table.Column<string>(nullable: true),
+                    template_url = table.Column<string>(nullable: true),
+                    thumbnail_url = table.Column<string>(nullable: true),
+                    title = table.Column<string>(nullable: true),
+                    url_tags = table.Column<string>(nullable: true),
+                    video_id = table.Column<long>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__AdCreativeHistory", x => new { x.AppUserDataSyncId, x.id });
+                    table.ForeignKey(
+                        name: "FK__AdCreativeHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_AdHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    account_id = table.Column<long>(nullable: false),
+                    campaign_id = table.Column<long>(nullable: false),
                     adset_id = table.Column<long>(nullable: false),
+                    bid_type = table.Column<string>(nullable: true),
+                    configured_status = table.Column<string>(nullable: true),
+                    created_time = table.Column<DateTime>(nullable: false),
+                    effective_status = table.Column<string>(nullable: true),
+                    last_updated_by_app_id = table.Column<long>(nullable: false),
+                    name = table.Column<string>(nullable: true),
+                    source_ad_id = table.Column<long>(nullable: false),
+                    status = table.Column<string>(nullable: true),
+                    updated_time = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__AdHistory", x => new { x.AppUserDataSyncId, x.id });
+                    table.ForeignKey(
+                        name: "FK__AdHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_AdImageHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    id = table.Column<string>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    url_128 = table.Column<string>(nullable: true),
+                    account_id = table.Column<long>(nullable: false),
+                    created_time = table.Column<DateTime>(nullable: false),
+                    hash = table.Column<string>(nullable: true),
+                    height = table.Column<int>(nullable: false),
+                    is_associated_creatives_in_adgroups = table.Column<bool>(nullable: false),
+                    name = table.Column<string>(nullable: true),
+                    original_height = table.Column<int>(nullable: false),
+                    original_width = table.Column<int>(nullable: false),
+                    permalink_url = table.Column<string>(nullable: true),
+                    status = table.Column<string>(nullable: true),
+                    url = table.Column<string>(nullable: true),
+                    update_time = table.Column<DateTime>(nullable: false),
+                    width = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__AdImageHistory", x => new { x.AppUserDataSyncId, x.id });
+                    table.ForeignKey(
+                        name: "FK__AdImageHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_CampaignHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    AppUserId = table.Column<int>(nullable: false),
+                    account_id = table.Column<long>(nullable: false),
+                    budget_rebalance_flag = table.Column<bool>(nullable: false),
+                    budget_remaining = table.Column<int>(nullable: false),
+                    buying_type = table.Column<string>(nullable: true),
+                    can_create_brand_lift_study = table.Column<bool>(nullable: false),
+                    can_use_spend_cap = table.Column<bool>(nullable: false),
+                    configured_status = table.Column<string>(nullable: true),
+                    created_time = table.Column<DateTime>(nullable: false),
+                    effective_status = table.Column<string>(nullable: true),
+                    name = table.Column<string>(nullable: true),
+                    objective = table.Column<string>(nullable: true),
+                    source_campaign_id = table.Column<long>(nullable: true),
+                    start_time = table.Column<DateTime>(nullable: false),
+                    stop_time = table.Column<DateTime>(nullable: true),
+                    updated_time = table.Column<DateTime>(nullable: true),
+                    status = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__CampaignHistory", x => new { x.AppUserDataSyncId, x.id });
+                    table.ForeignKey(
+                        name: "FK__CampaignHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK__CampaignHistory_AppUsers_AppUserId",
+                        column: x => x.AppUserId,
+                        principalTable: "AppUsers",
+                        principalColumn: "AppUserId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_GeolocationHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    adset_id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     location_types = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Geolocations", x => x.adset_id);
+                    table.PrimaryKey("PK__GeolocationHistory", x => new { x.AppUserDataSyncId, x.adset_id });
                     table.ForeignKey(
-                        name: "FK_Geolocations_Targeting_adset_id",
-                        column: x => x.adset_id,
-                        principalTable: "Targeting",
-                        principalColumn: "adset_id",
+                        name: "FK__GeolocationHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_GeolocationRegionMapHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    adset_id = table.Column<long>(nullable: false),
+                    key = table.Column<int>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__GeolocationRegionMapHistory", x => new { x.AppUserDataSyncId, x.adset_id, x.key });
+                    table.ForeignKey(
+                        name: "FK__GeolocationRegionMapHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_TargetingHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    adset_id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    age_max = table.Column<int>(nullable: false),
+                    age_min = table.Column<int>(nullable: false),
+                    publisher_platforms = table.Column<string>(nullable: true),
+                    facebook_positions = table.Column<string>(nullable: true),
+                    instagram_positions = table.Column<string>(nullable: true),
+                    device_platforms = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__TargetingHistory", x => new { x.AppUserDataSyncId, x.adset_id });
+                    table.ForeignKey(
+                        name: "FK__TargetingHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -228,8 +414,8 @@ namespace Assassins.DataAccess.Migrations
                 columns: table => new
                 {
                     account_id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserId = table.Column<int>(nullable: false),
                     amount_spent = table.Column<long>(nullable: false),
                     account_status = table.Column<int>(nullable: false),
@@ -284,8 +470,8 @@ namespace Assassins.DataAccess.Migrations
                 columns: table => new
                 {
                     id = table.Column<string>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     url_128 = table.Column<string>(nullable: true),
                     account_id = table.Column<long>(nullable: false),
                     created_time = table.Column<DateTime>(nullable: false),
@@ -317,8 +503,8 @@ namespace Assassins.DataAccess.Migrations
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
-                    AppUserDataSyncId = table.Column<long>(nullable: false)
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -332,27 +518,28 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "GeolocationRegionMaps",
+                name: "Targeting",
                 columns: table => new
                 {
                     adset_id = table.Column<long>(nullable: false),
-                    key = table.Column<int>(nullable: false)
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    age_max = table.Column<int>(nullable: false),
+                    age_min = table.Column<int>(nullable: false),
+                    publisher_platforms = table.Column<string>(nullable: true),
+                    facebook_positions = table.Column<string>(nullable: true),
+                    instagram_positions = table.Column<string>(nullable: true),
+                    device_platforms = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_GeolocationRegionMaps", x => new { x.adset_id, x.key });
+                    table.PrimaryKey("PK_Targeting", x => x.adset_id);
                     table.ForeignKey(
-                        name: "FK_GeolocationRegionMaps_Geolocations_adset_id",
-                        column: x => x.adset_id,
-                        principalTable: "Geolocations",
-                        principalColumn: "adset_id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_GeolocationRegionMaps_Regions_key",
-                        column: x => x.key,
-                        principalTable: "Regions",
-                        principalColumn: "key",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_Targeting_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -360,8 +547,8 @@ namespace Assassins.DataAccess.Migrations
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     CreatedOn = table.Column<DateTime>(nullable: false),
                     RecordDate = table.Column<DateTime>(nullable: false),
                     AppUserId = table.Column<int>(nullable: false),
@@ -410,8 +597,8 @@ namespace Assassins.DataAccess.Migrations
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     account_id = table.Column<long>(nullable: false),
                     body = table.Column<string>(nullable: true),
                     call_to_action_type = table.Column<string>(nullable: true),
@@ -463,12 +650,86 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Geolocations",
+                columns: table => new
+                {
+                    adset_id = table.Column<long>(nullable: false),
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    location_types = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Geolocations", x => x.adset_id);
+                    table.ForeignKey(
+                        name: "FK_Geolocations_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Geolocations_Targeting_adset_id",
+                        column: x => x.adset_id,
+                        principalTable: "Targeting",
+                        principalColumn: "adset_id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "_AdSetHistory",
+                columns: table => new
+                {
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    id = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
+                    campaign_id = table.Column<long>(nullable: false),
+                    account_id = table.Column<long>(nullable: false),
+                    bid_strategy = table.Column<string>(nullable: true),
+                    billing_event = table.Column<string>(nullable: true),
+                    budget_remaining = table.Column<int>(nullable: false),
+                    configured_status = table.Column<string>(nullable: true),
+                    created_time = table.Column<DateTime>(nullable: false),
+                    daily_budget = table.Column<int>(nullable: false),
+                    destination_type = table.Column<string>(nullable: true),
+                    effective_status = table.Column<string>(nullable: true),
+                    end_time = table.Column<DateTime>(nullable: false),
+                    lifetime_budget = table.Column<int>(nullable: false),
+                    lifetime_imps = table.Column<int>(nullable: false),
+                    name = table.Column<string>(nullable: true),
+                    optimization_goal = table.Column<string>(nullable: true),
+                    optimization_sub_event = table.Column<string>(nullable: true),
+                    recurring_budget_semantics = table.Column<bool>(nullable: false),
+                    source_adset_id = table.Column<long>(nullable: false),
+                    start_time = table.Column<DateTime>(nullable: false),
+                    status = table.Column<string>(nullable: true),
+                    updated_time = table.Column<DateTime>(nullable: false),
+                    use_new_app_click = table.Column<bool>(nullable: false),
+                    is_dynamic_creative = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK__AdSetHistory", x => new { x.AppUserDataSyncId, x.id });
+                    table.ForeignKey(
+                        name: "FK__AdSetHistory_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK__AdSetHistory_Campaigns_id",
+                        column: x => x.id,
+                        principalTable: "Campaigns",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AdSets",
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     campaign_id = table.Column<long>(nullable: false),
                     account_id = table.Column<long>(nullable: false),
                     bid_strategy = table.Column<string>(nullable: true),
@@ -571,12 +832,44 @@ namespace Assassins.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GeolocationRegionMaps",
+                columns: table => new
+                {
+                    adset_id = table.Column<long>(nullable: false),
+                    key = table.Column<int>(nullable: false),
+                    AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GeolocationRegionMaps", x => new { x.adset_id, x.key });
+                    table.ForeignKey(
+                        name: "FK_GeolocationRegionMaps_AppUserDataSyncs_AppUserDataSyncId",
+                        column: x => x.AppUserDataSyncId,
+                        principalTable: "AppUserDataSyncs",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_GeolocationRegionMaps_Geolocations_adset_id",
+                        column: x => x.adset_id,
+                        principalTable: "Geolocations",
+                        principalColumn: "adset_id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_GeolocationRegionMaps_Regions_key",
+                        column: x => x.key,
+                        principalTable: "Regions",
+                        principalColumn: "key",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Ads",
                 columns: table => new
                 {
                     id = table.Column<long>(nullable: false),
-                    DateRecorded = table.Column<DateTime>(nullable: false),
                     AppUserDataSyncId = table.Column<long>(nullable: false),
+                    DateRecorded = table.Column<DateTime>(nullable: false),
                     account_id = table.Column<long>(nullable: false),
                     campaign_id = table.Column<long>(nullable: false),
                     adset_id = table.Column<long>(nullable: false),
@@ -679,6 +972,26 @@ namespace Assassins.DataAccess.Migrations
                 values: new object[] { 2, 1 });
 
             migrationBuilder.CreateIndex(
+                name: "IX__AdAccountHistory_AppUserId",
+                table: "_AdAccountHistory",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX__AdAccountHistory_businessid",
+                table: "_AdAccountHistory",
+                column: "businessid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX__AdSetHistory_id",
+                table: "_AdSetHistory",
+                column: "id");
+
+            migrationBuilder.CreateIndex(
+                name: "IX__CampaignHistory_AppUserId",
+                table: "_CampaignHistory",
+                column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Actions_action_type_id",
                 table: "Actions",
                 column: "action_type_id");
@@ -687,16 +1000,6 @@ namespace Assassins.DataAccess.Migrations
                 name: "IX_Actions_campaign_insight_id",
                 table: "Actions",
                 column: "campaign_insight_id");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdAccountHistory_AppUserId",
-                table: "AdAccountHistory",
-                column: "AppUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_AdAccountHistory_businessid",
-                table: "AdAccountHistory",
-                column: "businessid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AdAccounts_AppUserDataSyncId",
@@ -799,23 +1102,62 @@ namespace Assassins.DataAccess.Migrations
                 column: "account_id");
 
             migrationBuilder.CreateIndex(
+                name: "IX_GeolocationRegionMaps_AppUserDataSyncId",
+                table: "GeolocationRegionMaps",
+                column: "AppUserDataSyncId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GeolocationRegionMaps_key",
                 table: "GeolocationRegionMaps",
                 column: "key");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Geolocations_AppUserDataSyncId",
+                table: "Geolocations",
+                column: "AppUserDataSyncId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_LeadForms_AppUserDataSyncId",
                 table: "LeadForms",
+                column: "AppUserDataSyncId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Targeting_AppUserDataSyncId",
+                table: "Targeting",
                 column: "AppUserDataSyncId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Actions");
+                name: "_AdAccountHistory");
 
             migrationBuilder.DropTable(
-                name: "AdAccountHistory");
+                name: "_AdCreativeHistory");
+
+            migrationBuilder.DropTable(
+                name: "_AdHistory");
+
+            migrationBuilder.DropTable(
+                name: "_AdImageHistory");
+
+            migrationBuilder.DropTable(
+                name: "_AdSetHistory");
+
+            migrationBuilder.DropTable(
+                name: "_CampaignHistory");
+
+            migrationBuilder.DropTable(
+                name: "_GeolocationHistory");
+
+            migrationBuilder.DropTable(
+                name: "_GeolocationRegionMapHistory");
+
+            migrationBuilder.DropTable(
+                name: "_TargetingHistory");
+
+            migrationBuilder.DropTable(
+                name: "Actions");
 
             migrationBuilder.DropTable(
                 name: "AdCreatives");

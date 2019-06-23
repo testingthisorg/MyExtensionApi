@@ -39,7 +39,7 @@ namespace Assassins.Api.Controllers
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
-                var newAds = IDataModel.ParseCollection<AdCreative>(adcreatives);
+                var newAds = DataModel.ParseCollection<AdCreative>(adcreatives);
                 var dateRecorded = DateTime.UtcNow;
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
@@ -64,6 +64,11 @@ namespace Assassins.Api.Controllers
                 var toUpdate = newAds.Where(k => toUpdateIds.Contains(k.id)).ToList();
                 var toDelete = currentItems.Where(k => toDeleteIds.Contains(k.id)).ToList();
 
+                // create a copy for the history
+                var historyItems = new List<_AdCreativeHistoryItem>(newAds.Count);
+                foreach (var item in newAds)
+                    historyItems.Add((_AdCreativeHistoryItem)item.CreateHistoryItem<_AdCreativeHistoryItem>());
+                _repo.AddAdCreativeHistoryItems(historyItems);
 
                 dataSyncEntity.CreativesCompleted = true;
 

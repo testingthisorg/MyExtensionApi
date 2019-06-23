@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AppUsers
 {
-    public class AppUser : IDataModel, IModificationHistory
+    public class AppUser : DataModel, IModificationHistory
     {
         public int AppUserId { get; set; }
         public long? id { get; set; }
@@ -84,7 +84,7 @@ namespace Assassins.DataModels.AppUsers
         public string AvatarUrl { get; set; }
         public string AdAssassinId { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var item = new AppUser()
             {

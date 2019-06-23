@@ -1,4 +1,5 @@
-﻿using Assassins.DataModels.Ads;
+﻿using Assassins.DataModels.AdImages;
+using Assassins.DataModels.Ads;
 using Assassins.DataModels.AdSets;
 using Assassins.DataModels.AppUsers;
 using Assassins.DataModels.Campaigns;
@@ -10,12 +11,8 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AdAccounts
 {
-    public class AdAccount : IDataModel, IHistoryData
+    public class AdAccount : HistoryItem 
     {
-        public DateTime DateRecorded { get; set; }
-        public long AppUserDataSyncId { get; set; }
-        public virtual AppUserDataSync AppUserDataSync { get; set; }
-
         public int AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
 
@@ -23,6 +20,7 @@ namespace Assassins.DataModels.AdAccounts
         public virtual ICollection<AdSet> adsets { get; set; }
         public virtual ICollection<Ad> ads { get; set; }
         public virtual ICollection<AdCreative> adcreatives { get; set; }
+        public virtual ICollection<AdImage> adimages { get; set; }
 
         #region // FB Properties ===========================
         public uint amount_spent { get; set; }
@@ -152,7 +150,7 @@ namespace Assassins.DataModels.AdAccounts
         public int timezone_offset_hours_utc { get; set; }
 
         #endregion // FB Properties ===========================
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new AdAccount()
             {
@@ -212,12 +210,10 @@ namespace Assassins.DataModels.AdAccounts
         }
 
     }
-    public class AdAccountHistory : IDataModel
+    public class _AdAccountHistoryItem : HistoryItem
     {
         public int AppUserId { get; set; }
         public virtual AppUser AppUser { get; set; }
-        public long AppUserDataSyncId { get; set; }
-        public DateTime DateRecorded { get; set; }
 
         //public virtual ICollection<Campaign> campaigns { get; set; }
         //public virtual ICollection<AdSet> adsets { get; set; }
@@ -331,9 +327,9 @@ namespace Assassins.DataModels.AdAccounts
         public int timezone_offset_hours_utc { get; set; }
 
         #endregion // FB Properties ===========================
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
-            var model = new AdAccountHistory()
+            var model = new _AdAccountHistoryItem()
             {
                 AppUserId = AppUserId,
                 AppUserDataSyncId = AppUserDataSyncId,

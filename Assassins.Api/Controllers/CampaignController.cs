@@ -69,7 +69,7 @@ namespace Assassins.Api.Controllers
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
-                var newCampaigns = IDataModel.ParseCollection<Campaign>(campaigns);
+                var newCampaigns = DataModel.ParseCollection<Campaign>(campaigns);
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
 
@@ -78,7 +78,7 @@ namespace Assassins.Api.Controllers
                 {
                     item.AppUserId = user.AppUserId;
                     item.AppUserDataSyncId = dataSyncEntity.Id;
-                    item.RecordDate = dateRecorded;
+                    item.DateRecorded = dateRecorded;
                 }
 
                 // reconcile accounts
@@ -97,6 +97,12 @@ namespace Assassins.Api.Controllers
                 var toUpdate = newCampaigns.Where(k => toUpdateIds.Contains(k.id)).ToList();
                 var toDelete = currentItems.Where(k => toDeleteIds.Contains(k.id)).ToList();
 
+
+                // create a copy for the history
+                var historyItems = new List<_CampaignHistoryItem>(newCampaigns.Count);
+                foreach (var item in newCampaigns)
+                    historyItems.Add((_CampaignHistoryItem)item.CreateHistoryItem<_CampaignHistoryItem>());
+                _repo.AddCampaignHistoryItems(historyItems);
 
                 dataSyncEntity.CampaignsCompleted = true;
 

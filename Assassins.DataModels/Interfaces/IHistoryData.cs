@@ -3,10 +3,11 @@ using System;
 
 namespace Assassins.DataModels.Interfaces
 {
-    public interface IHistoryData
+    public abstract class HistoryItem : DataModel
     {
-        long AppUserDataSyncId { get; set; } 
-        AppUserDataSync AppUserDataSync { get; set; }
-        DateTime DateRecorded { get; set; }
+        public long AppUserDataSyncId { get; set; }
+        public AppUserDataSync AppUserDataSync { get; set; }
+        public DateTime DateRecorded { get; set; }
+
     }
 }

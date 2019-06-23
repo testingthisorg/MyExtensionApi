@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AppUsers
 {
-    public class AppRole : IDataModel
+    public class AppRole : DataModel
     {
         public int RoleId { get; set; }
         public string Name { get; set; }
@@ -31,7 +31,7 @@ namespace Assassins.DataModels.AppUsers
         public string Name { get; set; }
         public List<AppUserViewModel> RoleUsers { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var item = new AppRole()
             {

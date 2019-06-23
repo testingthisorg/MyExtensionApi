@@ -5,13 +5,8 @@ using System;
 namespace Assassins.DataModels.LeadForms
 {
 
-    public class LeadForm : IDataModel, IHistoryData
+    public class LeadForm : HistoryItem
     {
-        public DateTime DateRecorded { get; set; }
-        public long AppUserDataSyncId { get; set; }
-        public virtual AppUserDataSync AppUserDataSync { get; set; }
-
-
         public long id { get; set; }
         public override IDataViewModel ToViewModel()
         {
@@ -21,7 +16,7 @@ namespace Assassins.DataModels.LeadForms
     public class LeadFormViewModel : IDataViewModel
     {
         public long id { get; set; }
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             throw new NotImplementedException();
         }

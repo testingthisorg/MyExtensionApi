@@ -11,7 +11,7 @@ namespace Assassins.DataAccess.Repositories
     public class AdSetRepository : BaseRepository, IAdSetRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
-        private readonly string key = "ad-sets";
+        //private readonly string key = "ad-sets";
         public AdSetRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
@@ -83,6 +83,26 @@ namespace Assassins.DataAccess.Repositories
         public void RemoveGelocationRegionMaps(ICollection<GeolocationRegionMap> toRemoveMaps)
         {
             _context.GeolocationRegionMaps.RemoveRange(toRemoveMaps);
+        }
+
+        public void AddGeolocationHistoryItems(List<_GeolocationHistoryItem> geolocHistoryItems)
+        {
+            _context._GeolocationHistory.AddRange(geolocHistoryItems);
+        }
+
+        public void AddSetHistoryItems(List<_AdSetHistoryItem> historyItems)
+        {
+            _context._AdSetHistory.AddRange(historyItems);
+        }
+
+        public void AddTargetHistoryItems(List<_TargetingHistoryItem> tgtHistoryItems)
+        {
+            _context._TargetingHistory.AddRange(tgtHistoryItems);
+        }
+
+        public void AddGeolocationRegionMapHistoryItems(List<_GeolocationRegionMapHistoryItem> geolocMapHistoryItems)
+        {
+            _context._GeolocationRegionMapHistory.AddRange(geolocMapHistoryItems);
         }
     }
 }

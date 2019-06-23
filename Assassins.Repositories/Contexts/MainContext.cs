@@ -15,9 +15,18 @@ namespace Assassins.DataAccess.Contexts
 {
     public class MainContext : DbContext
     {
+
+        public DbSet<_AdAccountHistoryItem> _AdAccountHistory { get; set; }
+        public DbSet<_CampaignHistoryItem> _CampaignHistory { get; set; }
+        public DbSet<_AdSetHistoryItem> _AdSetHistory { get; set; }
+        public DbSet<_AdHistoryItem> _AdHistory { get; set; }
+        public DbSet<_AdCreativeHistoryItem> _AdCreativeHistory { get; set; }
+        public DbSet<_AdImageHistoryItem> _AdImageHistory { get; set; }
+        public DbSet<_TargetingHistoryItem> _TargetingHistory { get; set; }
+        public DbSet<_GeolocationHistoryItem> _GeolocationHistory { get; set; }
+        public DbSet<_GeolocationRegionMapHistoryItem> _GeolocationRegionMapHistory { get; set; }
+
         public DbSet<AdAccount> AdAccounts { get; set; }
-        public DbSet<AdAccountHistory> AdAccountHistory { get; set; }
-        //public DbSet<AttributionSpec> AttributionSpecs { get; set; }
         public DbSet<Campaign> Campaigns { get; set; }
         public DbSet<CampaignInsight> CampaignInsights { get; set; }
         public DbSet<AdSet> AdSets { get; set; }
@@ -213,7 +222,11 @@ namespace Assassins.DataAccess.Contexts
                                 .WithOne(k => k.AdAccount)
                                 .HasForeignKey(k => k.account_id)
                                 .OnDelete(DeleteBehavior.Restrict);
-
+            modelBuilder.Entity<AdAccount>()
+                                .HasMany(k => k.adimages)
+                                .WithOne(k => k.AdAccount)
+                                .HasForeignKey(k => k.account_id)
+                                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Business>().HasKey(k => k.id);
             modelBuilder.Entity<Business>()
@@ -231,7 +244,7 @@ namespace Assassins.DataAccess.Contexts
 
             #region Ad Account History
 
-            modelBuilder.Entity<AdAccountHistory>().HasKey(k => new { k.AppUserDataSyncId, k.account_id });
+            modelBuilder.Entity<_AdAccountHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.account_id });
 
             #endregion Ad Account History
 
@@ -264,6 +277,12 @@ namespace Assassins.DataAccess.Contexts
                         .OnDelete(DeleteBehavior.Restrict);
             #endregion Campaigns
 
+            #region Campaign History
+
+            modelBuilder.Entity<_CampaignHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.id });
+
+            #endregion Campaign History
+
             #region AdSets
             modelBuilder.Entity<AdSet>().HasKey(k => k.id);
             modelBuilder.Entity<AdSet>()
@@ -293,7 +312,8 @@ namespace Assassins.DataAccess.Contexts
             modelBuilder.Entity<Targeting>()
                         .HasOne(K => K.geo_locations)
                         .WithOne(k => k.Targeting)
-                        .HasForeignKey<Geolocation>(k => k.adset_id);
+                        .HasForeignKey<Geolocation>(k => k.adset_id)
+                        .OnDelete(DeleteBehavior.Restrict);
             modelBuilder.Entity<Targeting>()
                         .Property(k => k.publisher_platforms)
                         .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
@@ -313,7 +333,6 @@ namespace Assassins.DataAccess.Contexts
                         .Property(k => k.adset_id)
                         .ValueGeneratedNever();
             modelBuilder.Entity<GeolocationRegionMap>().HasKey(k => new { k.adset_id, k.key });
-
             modelBuilder.Entity<Geolocation>()
                         .HasMany(k => k.region_maps)
                         .WithOne(k => k.GeoLocation)
@@ -322,6 +341,7 @@ namespace Assassins.DataAccess.Contexts
             modelBuilder.Entity<Geolocation>()
                         .Property(k => k.location_types)
                         .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
             modelBuilder.Entity<Region>().HasKey(k => k.key);
             modelBuilder.Entity<Region>()
                         .HasMany(k => k.GeoLocationRegionMaps)
@@ -334,12 +354,43 @@ namespace Assassins.DataAccess.Contexts
 
             #endregion AdSets
 
+            #region AdSet History
+
+            modelBuilder.Entity<_AdSetHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.id });
+            modelBuilder.Entity<_TargetingHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.adset_id });
+            modelBuilder.Entity<_GeolocationHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.adset_id });
+            modelBuilder.Entity<_GeolocationRegionMapHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.adset_id, k.key });
+
+            modelBuilder.Entity<_GeolocationHistoryItem>()
+                        .Property(k => k.location_types)
+                        .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            modelBuilder.Entity<_TargetingHistoryItem>()
+                        .Property(k => k.publisher_platforms)
+                        .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            modelBuilder.Entity<_TargetingHistoryItem>()
+                        .Property(k => k.facebook_positions)
+                        .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            modelBuilder.Entity<_TargetingHistoryItem>()
+                        .Property(k => k.instagram_positions)
+                        .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+            modelBuilder.Entity<_TargetingHistoryItem>()
+                        .Property(k => k.device_platforms)
+                        .HasConversion(k => string.Join(',', k), k => k.Split(',', StringSplitOptions.RemoveEmptyEntries));
+
+            #endregion AdSet History
+
             #region Ads
             modelBuilder.Entity<Ad>().HasKey(k => k.id);
             modelBuilder.Entity<Ad>()
                         .Property(k => k.id)
                         .ValueGeneratedNever();
             #endregion Ads
+
+            #region Ad History
+
+            modelBuilder.Entity<_AdHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.id });
+
+            #endregion Ad History
 
             #region Ad Creatives
             modelBuilder.Entity<AdCreative>().HasKey(k => k.id);
@@ -348,6 +399,12 @@ namespace Assassins.DataAccess.Contexts
                         .ValueGeneratedNever();
 
             #endregion Ad Creatives
+
+            #region Ad Creative History
+
+            modelBuilder.Entity<_AdCreativeHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.id });
+
+            #endregion Ad Creative History
 
             #region Ad Images
             modelBuilder.Entity<LeadForm>().HasKey(k => k.id);
@@ -360,6 +417,12 @@ namespace Assassins.DataAccess.Contexts
             //            .HasForeignKey(k => k.adimage_id)
             //            .OnDelete(DeleteBehavior.Restrict);
             #endregion Ad Images
+
+            #region Ad Image History
+
+            modelBuilder.Entity<_AdImageHistoryItem>().HasKey(k => new { k.AppUserDataSyncId, k.id });
+
+            #endregion Ad Image History
 
             #region Actions
 

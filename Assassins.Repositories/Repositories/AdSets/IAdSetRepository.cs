@@ -18,5 +18,9 @@ namespace Assassins.DataAccess.Repositories
         ICollection<Targeting> GetTargetings(ICollection<long> adSetIds);
         ICollection<Geolocation> GetGeolocations(ICollection<long> adSetIds);
         void RemoveGelocationRegionMaps(ICollection<GeolocationRegionMap> toRemoveMaps);
+        void AddGeolocationHistoryItems(List<_GeolocationHistoryItem> geolocHistoryItems);
+        void AddSetHistoryItems(List<_AdSetHistoryItem> historyItems);
+        void AddTargetHistoryItems(List<_TargetingHistoryItem> tgtHistoryItems);
+        void AddGeolocationRegionMapHistoryItems(List<_GeolocationRegionMapHistoryItem> geolocMapHistoryItems);
     }
 }

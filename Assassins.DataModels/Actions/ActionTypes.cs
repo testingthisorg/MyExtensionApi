@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.Actions
 {
-    public class ActionType : IDataModel
+    public class ActionType : DataModel
     {
         public int AaId { get; set; }
         public string action_type { get; set; }
@@ -22,7 +22,7 @@ namespace Assassins.DataModels.Actions
     {
         public int AaId { get; set; }
         public string action_type { get; set; }
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new ActionType()
             {

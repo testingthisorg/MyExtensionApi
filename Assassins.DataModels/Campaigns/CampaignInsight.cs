@@ -6,7 +6,7 @@ using Action = Assassins.DataModels.Actions.Action;
 
 namespace Assassins.DataModels.Campaigns
 {
-    public class CampaignInsight : IDataModel
+    public class CampaignInsight : DataModel
     {
         //public int AaId { get; set; }
 
@@ -141,7 +141,7 @@ namespace Assassins.DataModels.Campaigns
         public double unique_link_clicks_ctr { get; set; }
 
         #endregion // FB Properties ===========================
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new CampaignInsight()
             {

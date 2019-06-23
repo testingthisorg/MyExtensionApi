@@ -60,14 +60,14 @@ namespace Assassins.Api.Controllers
         {
             try
             {
-                var newAccounts = IDataModel.ParseCollection<AdAccount>(accounts);
+                var newAccounts = DataModel.ParseCollection<AdAccount>(accounts);
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
 
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
 
-                var userOwnedAccounts = newAccounts.Where(k => k.owner == user.id).ToList();
+                var userOwnedAccounts = newAccounts; // newAccounts.Where(k => k.owner == user.id).ToList();
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
                 var dateRecorded = DateTime.UtcNow;
                 foreach (var item in userOwnedAccounts)
@@ -76,8 +76,8 @@ namespace Assassins.Api.Controllers
                     item.AppUserDataSyncId = dataSyncEntity.Id;
                 }
 
-                //  var currentAccounts = _repo.GetAdAccountsByOwnerId(user.AppUserId);
-                var currentAccounts = _repo.GetAdAccountsByOwnerId(user.id.Value);
+                  var currentAccounts = _repo.GetAdAccountsByUserId(user.AppUserId);
+               // var currentAccounts = _repo.GetAdAccountsByOwnerId(user.id.Value);
 
                 var currAccntIds = currentAccounts.Select(k => k.account_id).ToList();
                 var newAccntIds = userOwnedAccounts.Select(k => k.account_id).ToList();
@@ -97,6 +97,13 @@ namespace Assassins.Api.Controllers
                     item.AppUserId = user.AppUserId;
                 foreach (var item in toUpdate)
                     item.AppUserId = user.AppUserId;
+
+                // create a copy for the history
+                var historyItems = new List<_AdAccountHistoryItem>(userOwnedAccounts.Count);
+                foreach (var item in userOwnedAccounts)
+                    historyItems.Add((_AdAccountHistoryItem)item.CreateHistoryItem<_AdAccountHistoryItem>());
+                _repo.AddAdAccountHistoryItems(historyItems);
+
                 _repo.AddAdAccounts(toAdd);
                 _repo.UpdateAdAccounts(toUpdate);
                 _userRepo.UpdateDataSync(dataSyncEntity);

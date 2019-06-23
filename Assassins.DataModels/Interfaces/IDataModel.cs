@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.Interfaces
 {
-    public abstract class IDataModel
+    public abstract class DataModel
     {
         public abstract IDataViewModel ToViewModel();
         public static ICollection<T> ParseCollection<T>(List<object> items)

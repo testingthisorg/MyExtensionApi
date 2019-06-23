@@ -12,5 +12,6 @@ namespace Assassins.DataAccess.Repositories
         ICollection<AdCreative> GetAdCreativesByUserId(int appUserId);
         void AddAdCreatives(ICollection<AdCreative> toAdd);
         void UpdateAdCreatives(ICollection<AdCreative> toUpdate);
+        void AddAdCreativeHistoryItems(List<_AdCreativeHistoryItem> historyItems);
     }
 }

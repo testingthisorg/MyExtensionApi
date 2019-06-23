@@ -40,7 +40,7 @@ namespace Assassins.Api.Controllers
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
-                var newAdsets = IDataModel.ParseCollection<AdSet>(adsets);
+                var newAdsets = DataModel.ParseCollection<AdSet>(adsets);
                 var dateRecorded = DateTime.UtcNow;
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
@@ -49,9 +49,9 @@ namespace Assassins.Api.Controllers
                 // create new regions if they do not exist in our system
                 var newRegions = new Dictionary<int, Region>();
                 var currentItems = _repo.GetAdSetByUserId(user.AppUserId);
-              //  var targetings = currentItems.Select(k => k.targeting).ToDictionary(k => k.adset_id, m => m);
+                //  var targetings = currentItems.Select(k => k.targeting).ToDictionary(k => k.adset_id, m => m);
                 //var newTargets = new Dictionary<long, Targeting>();
-            //    var geolocations = targetings.Values.Select(k => k.geo_locations).ToDictionary(k => k.adset_id, m => m);
+                //    var geolocations = targetings.Values.Select(k => k.geo_locations).ToDictionary(k => k.adset_id, m => m);
                 var regions = _repo.GetRegions();
                 var toRemoveMaps = new List<GeolocationRegionMap>(10);
                 foreach (var item in newAdsets)
@@ -61,7 +61,12 @@ namespace Assassins.Api.Controllers
                     //if (!targetings.ContainsKey(item.id) && !newTargets.ContainsKey(item.id))
                     //    newTargets.Add(item.id, item.targeting);
                     item.targeting.adset_id = item.id;
+                    item.targeting.AppUserDataSyncId = dataSyncEntity.Id;
+                    item.targeting.DateRecorded = dateRecorded;
+
                     item.targeting.geo_locations.adset_id = item.id;
+                    item.targeting.geo_locations.AppUserDataSyncId = dataSyncEntity.Id;
+                    item.targeting.geo_locations.DateRecorded = dateRecorded;
                     //if (geolocations.ContainsKey(item.targeting.adset_id))
                     //    item.targeting.geo_locations.adset_id = geolocations[item.targeting.adset_id].adset_id;
 
@@ -72,7 +77,7 @@ namespace Assassins.Api.Controllers
                             newRegions.Add(region.key, region);
 
                         var currentItem = currentItems.FirstOrDefault(k => k.id == item.id);
-                        if(currentItem != null)
+                        if (currentItem != null)
                         {
                             var currentRegions = currentItem.targeting.geo_locations.region_maps;
                             var incomingRegions = item.targeting.geo_locations.regions;
@@ -85,7 +90,8 @@ namespace Assassins.Api.Controllers
 
                             foreach (var keyMap in toAddRegKeyMaps)
                             {
-                                item.targeting.geo_locations.region_maps.Add(new GeolocationRegionMap() { key = keyMap });
+                                item.targeting.geo_locations.region_maps.Add(
+                                            new GeolocationRegionMap() { key = keyMap, AppUserDataSyncId = dataSyncEntity.Id, DateRecorded = dateRecorded });
                             }
                             foreach (var keyMap in toRemoveRegKeyMaps)
                             {
@@ -95,7 +101,8 @@ namespace Assassins.Api.Controllers
                             }
                         }
                         else
-                            item.targeting.geo_locations.region_maps.Add(new GeolocationRegionMap() { key = region.key });
+                            item.targeting.geo_locations.region_maps.Add(
+                                new GeolocationRegionMap() { key = region.key, AppUserDataSyncId = dataSyncEntity.Id, DateRecorded = dateRecorded });
                     }
                 }
 
@@ -114,6 +121,40 @@ namespace Assassins.Api.Controllers
                 var toUpdate = newAdsets.Where(k => toUpdateIds.Contains(k.id)).ToList();
                 var toDelete = currentItems.Where(k => toDeleteIds.Contains(k.id)).ToList();
 
+                var historyItems = new List<_AdSetHistoryItem>(newAdsets.Count);
+                var tgtHistoryItems = new List<_TargetingHistoryItem>(newAdsets.Count);
+                var geolocHistoryItems = new List<_GeolocationHistoryItem>(newAdsets.Count);
+                var geolocMapHistoryItems = new List<_GeolocationRegionMapHistoryItem>(newAdsets.Count);
+                foreach (var item in newAdsets)
+                {
+                    var newAsHi = (_AdSetHistoryItem)item.CreateHistoryItem<_AdSetHistoryItem>();
+                    newAsHi.AppUserDataSyncId = dataSyncEntity.Id;
+                    newAsHi.DateRecorded = dateRecorded;
+                    historyItems.Add(newAsHi);
+
+                    var newTgtHi = (_TargetingHistoryItem)item.targeting.CreateHistoryItem<_TargetingHistoryItem>();
+                    newTgtHi.AppUserDataSyncId = dataSyncEntity.Id;
+                    newTgtHi.DateRecorded = dateRecorded;
+                    tgtHistoryItems.Add(newTgtHi);
+
+                    var glocHi = (_GeolocationHistoryItem)item.targeting.geo_locations.CreateHistoryItem<_GeolocationHistoryItem>();
+                    glocHi.AppUserDataSyncId = dataSyncEntity.Id;
+                    glocHi.DateRecorded = dateRecorded;
+                    geolocHistoryItems.Add(glocHi);
+
+                    foreach (var regMap in item.targeting.geo_locations.region_maps)
+                    {
+                        var geolocRegMapHi = (_GeolocationRegionMapHistoryItem)regMap.CreateHistoryItem<_GeolocationRegionMapHistoryItem>();
+                        geolocRegMapHi.AppUserDataSyncId = dataSyncEntity.Id;
+                        geolocRegMapHi.DateRecorded = dateRecorded;
+                        geolocRegMapHi.adset_id = item.id;
+                        geolocMapHistoryItems.Add(geolocRegMapHi);
+                    }
+                }
+                _repo.AddSetHistoryItems(historyItems);
+                _repo.AddTargetHistoryItems(tgtHistoryItems);
+                _repo.AddGeolocationHistoryItems(geolocHistoryItems);
+                _repo.AddGeolocationRegionMapHistoryItems(geolocMapHistoryItems);
 
                 dataSyncEntity.AdSetsCompleted = true;
 

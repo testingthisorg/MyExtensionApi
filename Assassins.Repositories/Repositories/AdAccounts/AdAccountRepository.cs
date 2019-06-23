@@ -1,6 +1,7 @@
 ﻿using Assassins.Configuration;
 using Assassins.DataAccess.Contexts;
 using Assassins.DataModels.AdAccounts;
+using Assassins.DataModels.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Assassins.DataAccess.Repositories.AdAccounts
     public class AdAccountRepository : BaseRepository, IAdAccountRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
-        private readonly string key = "aa-accounts";
+        //private readonly string key = "aa-accounts";
         public AdAccountRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
@@ -67,6 +68,11 @@ namespace Assassins.DataAccess.Repositories.AdAccounts
                         .AdAccounts.Where(k => k.owner == owner_id)
                         .Select(k => k.account_id);
             return ids.ToList();
+        }
+
+        public void AddAdAccountHistoryItems(List<_AdAccountHistoryItem> historyItems)
+        {
+            _context._AdAccountHistory.AddRange(historyItems);
         }
     }
 }

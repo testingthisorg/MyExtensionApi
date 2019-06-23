@@ -4,14 +4,16 @@ using Assassins.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Assassins.DataAccess.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20190622205820_initial-migration-3")]
+    partial class initialmigration3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,7 +238,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("status");
 
-                    b.Property<DateTime?>("update_time");
+                    b.Property<DateTime>("update_time");
 
                     b.Property<string>("url");
 
@@ -247,8 +249,6 @@ namespace Assassins.DataAccess.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("AppUserDataSyncId");
-
-                    b.HasIndex("account_id");
 
                     b.ToTable("AdImages");
                 });
@@ -281,7 +281,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("status");
 
-                    b.Property<DateTime?>("update_time");
+                    b.Property<DateTime>("update_time");
 
                     b.Property<string>("url");
 
@@ -490,6 +490,8 @@ namespace Assassins.DataAccess.Migrations
                     b.Property<bool>("use_new_app_click");
 
                     b.HasKey("AppUserDataSyncId", "id");
+
+                    b.HasIndex("id");
 
                     b.ToTable("_AdSetHistory");
                 });
@@ -767,10 +769,6 @@ namespace Assassins.DataAccess.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<bool>("AdAccountsCompleted");
-
-                    b.Property<bool>("AdImagesCompleted");
-
-                    b.Property<bool>("AdInsightsCompleted");
 
                     b.Property<bool>("AdSetsCompleted");
 
@@ -1310,11 +1308,6 @@ namespace Assassins.DataAccess.Migrations
                         .WithMany("AdImages")
                         .HasForeignKey("AppUserDataSyncId")
                         .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
-                        .WithMany("adimages")
-                        .HasForeignKey("account_id")
-                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("Assassins.DataModels.AdImages._AdImageHistoryItem", b =>
@@ -1392,6 +1385,11 @@ namespace Assassins.DataAccess.Migrations
                     b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
                         .WithMany()
                         .HasForeignKey("AppUserDataSyncId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Assassins.DataModels.Campaigns.Campaign", "Campaign")
+                        .WithMany()
+                        .HasForeignKey("id")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

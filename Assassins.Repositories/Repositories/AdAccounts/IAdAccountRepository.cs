@@ -1,4 +1,5 @@
 ﻿using Assassins.DataModels.AdAccounts;
+using Assassins.DataModels.Interfaces;
 using System.Collections.Generic;
 
 namespace Assassins.DataAccess.Repositories.AdAccounts
@@ -15,5 +16,6 @@ namespace Assassins.DataAccess.Repositories.AdAccounts
 
         void UpdateAdAccounts(List<AdAccount> toUpdate);
         ICollection<long> GetAccountIdsByOwnerId(long owner_id);
+        void AddAdAccountHistoryItems(List<_AdAccountHistoryItem> historyItems);
     }
 }

@@ -101,6 +101,7 @@ namespace Assassins.Api
             services.AddScoped<IAdSetRepository, AdSetRepository>();
             services.AddScoped<IAdRepository, AdRepository>();
             services.AddScoped<IAdCreativeRepository, AdCreativeRepository>();
+            services.AddScoped<IAdImageRepository, AdImageRepository>();
             services.AddScoped<ILeadFormRepository, LeadFormRepository>();
             // =====================Firebase=============================================
             services.AddScoped<IAuthAdapter, Firebase>();

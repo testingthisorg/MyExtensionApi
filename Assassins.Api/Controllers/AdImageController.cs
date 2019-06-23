@@ -1,6 +1,6 @@
 ﻿using Assassins.DataAccess.Repositories;
 using Assassins.DataAccess.Repositories.AppUsers;
-using Assassins.DataModels.Ads;
+using Assassins.DataModels.AdImages;
 using Assassins.DataModels.Interfaces;
 using Assassins.Helpers;
 using Microsoft.AspNetCore.Authorization;
@@ -13,44 +13,44 @@ using System.Net;
 namespace Assassins.Api.Controllers
 {
     [Authorize]
-    [Route("api/v1/aa-ads")]
+    [Route("api/v1/aa-ad-images")]
     [ApiController]
-    public class AdController : Controller
+    public class AdImageController : Controller
     {
-        private readonly IAdRepository _repo;
+        private readonly IAdImageRepository _repo;
         private readonly IAppUserRepository _userRepo;
 
-        public AdController(IAdRepository repo, IAppUserRepository userRepo)
+        public AdImageController(IAdImageRepository repo, IAppUserRepository userRepo)
         {
             _repo = repo;
             _userRepo = userRepo;
         }
-        [HttpGet("{owner_id}/ad-ids")]
-        public JsonResult GetAdAccountIds(long owner_id)
+        [HttpGet("{owner_id}/ad-image-ids")]
+        public JsonResult GetAdImageIds(long owner_id)
         {
-            var ids = _repo.GetAdIdsByOwnerId(owner_id);
+            var ids = _repo.GetAdImageIdsByOwnerId(owner_id);
             return Json(ids);
         }
         [HttpPost("")]
-        public JsonResult ProcessAds([FromBody]List<object> ads)
+        public JsonResult ProcessAdImages([FromBody]List<object> adimages)
         {
             try
             {
                 var email = UserClaimHelpers.Email(User.Identity);
                 var user = _userRepo.GetAppUserByEmail(email);
                 var dataSyncEntity = _userRepo.GetCurrentDataSync(user.AppUserId);
-                var newAds = DataModel.ParseCollection<Ad>(ads);
+                var newAds = DataModel.ParseCollection<AdImage>(adimages);
+                var dateRecorded = DateTime.UtcNow;
                 if (user == null)
                     throw new Exception("We don't seem to be able to locate your account.  Please contact support for assistance.");
 
-                var dateRecorded = DateTime.UtcNow;
                 foreach (var item in newAds)
                 {
                     item.AppUserDataSyncId = dataSyncEntity.Id;
                     item.DateRecorded = dateRecorded;
-
                 }
-                var currentItems = _repo.GetAdsByUserId(user.AppUserId);
+
+                var currentItems = _repo.GetAdImagesByUserId(user.AppUserId);
 
                 var currIds = currentItems.Select(k => k.id).ToList();
                 var newIds = newAds.Select(k => k.id).ToList();
@@ -65,15 +65,15 @@ namespace Assassins.Api.Controllers
                 var toDelete = currentItems.Where(k => toDeleteIds.Contains(k.id)).ToList();
 
                 // create a copy for the history
-                var historyItems = new List<_AdHistoryItem>(newAds.Count);
+                var historyItems = new List<_AdImageHistoryItem>(newAds.Count);
                 foreach (var item in newAds)
-                    historyItems.Add((_AdHistoryItem)item.CreateHistoryItem<_AdHistoryItem>());
-                _repo.AddAdHistoryItems(historyItems);
+                    historyItems.Add((_AdImageHistoryItem)item.CreateHistoryItem<_AdImageHistoryItem>());
+                _repo.AddAdImageHistoryItems(historyItems);
 
-                dataSyncEntity.AdsCompleted = true;
+                dataSyncEntity.AdImagesCompleted = true;
 
-                _repo.AddAds(toAdd);
-                _repo.UpdateAds(toUpdate);
+                _repo.AddAdImages(toAdd);
+                _repo.UpdateAdImages(toUpdate);
                 _userRepo.UpdateDataSync(dataSyncEntity);
 
                 if (_repo.Base.SaveAll(User))

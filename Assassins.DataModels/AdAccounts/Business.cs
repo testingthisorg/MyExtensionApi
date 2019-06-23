@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AdAccounts
 {
-    public class Business : IDataModel
+    public class Business : DataModel
     {
         //public int AaId { get; set; }
         public long id { get; set; }
@@ -26,7 +26,7 @@ namespace Assassins.DataModels.AdAccounts
         public long id { get; set; }
         public string name { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new Business()
             {

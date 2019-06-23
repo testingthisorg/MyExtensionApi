@@ -1,6 +1,6 @@
 ﻿using Assassins.Configuration;
 using Assassins.DataAccess.Contexts;
-using Assassins.DataModels.Creatives;
+using Assassins.DataModels.AdImages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using System.Collections.Generic;
@@ -8,14 +8,14 @@ using System.Linq;
 
 namespace Assassins.DataAccess.Repositories
 {
-    public class AdCreativeRepository : BaseRepository, IAdCreativeRepository
+    public class AdImageRepository : BaseRepository, IAdImageRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
         //private readonly string key = "ad-creatives";
-        public AdCreativeRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
+        public AdImageRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
-        public ICollection<long> GetAdCreativeIdsByOwnerId(long owner_id)
+        public ICollection<long> GetAdImageIdsByOwnerId(long owner_id)
         {
             var items = _context.AdAccounts.Where(k => k.owner == owner_id)
                                 .SelectMany(k => k.adcreatives.Select(m => m.id))
@@ -23,28 +23,28 @@ namespace Assassins.DataAccess.Repositories
             return items;
 
         }
-        public ICollection<AdCreative> GetAdCreativesByUserId(int appUserId)
+        public ICollection<AdImage> GetAdImagesByUserId(int appUserId)
         {
             var items = _context.AdAccounts.Where(k => k.AppUserId == appUserId)
                         .AsNoTracking()
-                      .SelectMany(k => k.adcreatives)
+                      .SelectMany(k => k.adimages)
                       .ToList();
             return items;
         }
 
-        public void AddAdCreatives(ICollection<AdCreative> toAdd)
+        public void AddAdImages(ICollection<AdImage> toAdd)
         {
-            _context.AdCreatives.AddRange(toAdd);
+            _context.AdImages.AddRange(toAdd);
         }
 
-        public void UpdateAdCreatives(ICollection<AdCreative> toUpdate)
+        public void UpdateAdImages(ICollection<AdImage> toUpdate)
         {
-            _context.AdCreatives.UpdateRange(toUpdate);
+            _context.AdImages.UpdateRange(toUpdate);
         }
 
-        public void AddAdCreativeHistoryItems(List<_AdCreativeHistoryItem> historyItems)
+        public void AddAdImageHistoryItems(List<_AdImageHistoryItem> historyItems)
         {
-            _context._AdCreativeHistory.AddRange(historyItems);
+            _context._AdImageHistory.AddRange(historyItems);
         }
     }
 }

@@ -109,8 +109,15 @@ namespace Assassins.DataAccess.Repositories.AppUsers
         public ICollection<AppUserDataSync> GetUserDataSyncStatus(int id)
         {
             var items = _context.AppUserDataSyncs
-                                .Where(k => k.AppUserId == id && !k.AllCompleted)
-                                .ToList();
+                                .Where(k => k.AppUserId == id && 
+                                            !(k.AdAccountsCompleted &&
+                                            k.CampaignsCompleted &&
+                                            k.AdSetsCompleted &&
+                                            k.AdsCompleted &&
+                                            k.CreativesCompleted &&
+                                            k.LeadFormsCompleted &&
+                                            k.AdImagesCompleted))
+                                    .ToList();
             return items;
         }
 

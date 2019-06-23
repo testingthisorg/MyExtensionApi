@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AdSets
 {
-    public class Region : IDataModel
+    public class Region : DataModel
     {
         public int key { get; set; }
         public string name { get; set; }
@@ -27,7 +27,7 @@ namespace Assassins.DataModels.AdSets
         public string name { get; set; }
         public string country { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new Region()
             {

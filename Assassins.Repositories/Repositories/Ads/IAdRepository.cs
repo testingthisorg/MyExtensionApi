@@ -12,5 +12,6 @@ namespace Assassins.DataAccess.Repositories
         ICollection<long> GetAdIdsByOwnerId(long owner_id);
         void AddAds(ICollection<Ad> toAdd);
         void UpdateAds(ICollection<Ad> toUpdate);
+        void AddAdHistoryItems(List<_AdHistoryItem> historyItems);
     }
 }

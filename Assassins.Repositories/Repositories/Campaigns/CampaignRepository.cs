@@ -14,7 +14,7 @@ namespace Assassins.DataAccess.Repositories.Campaigns
     public class CampaignRepository : BaseRepository, ICampaignRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
-        private readonly string key = "campaigns";
+        //private readonly string key = "campaigns";
         public CampaignRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
@@ -67,6 +67,11 @@ namespace Assassins.DataAccess.Repositories.Campaigns
             var cmps = _context.Campaigns.Where(k => k.AppUser.id == owner_id)
                                 .Select(k => k.id).ToList();
             return cmps;
+        }
+
+        public void AddCampaignHistoryItems(List<_CampaignHistoryItem> historyItems)
+        {
+            _context._CampaignHistory.AddRange(historyItems);
         }
     }
 }

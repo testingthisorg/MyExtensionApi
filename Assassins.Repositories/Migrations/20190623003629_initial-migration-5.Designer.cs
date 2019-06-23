@@ -4,14 +4,16 @@ using Assassins.DataAccess.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Assassins.DataAccess.Migrations
 {
     [DbContext(typeof(MainContext))]
-    partial class MainContextModelSnapshot : ModelSnapshot
+    [Migration("20190623003629_initial-migration-5")]
+    partial class initialmigration5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -236,7 +238,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("status");
 
-                    b.Property<DateTime?>("update_time");
+                    b.Property<DateTime>("update_time");
 
                     b.Property<string>("url");
 
@@ -247,8 +249,6 @@ namespace Assassins.DataAccess.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("AppUserDataSyncId");
-
-                    b.HasIndex("account_id");
 
                     b.ToTable("AdImages");
                 });
@@ -281,7 +281,7 @@ namespace Assassins.DataAccess.Migrations
 
                     b.Property<string>("status");
 
-                    b.Property<DateTime?>("update_time");
+                    b.Property<DateTime>("update_time");
 
                     b.Property<string>("url");
 
@@ -1309,11 +1309,6 @@ namespace Assassins.DataAccess.Migrations
                     b.HasOne("Assassins.DataModels.AppUsers.AppUserDataSync", "AppUserDataSync")
                         .WithMany("AdImages")
                         .HasForeignKey("AppUserDataSyncId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("Assassins.DataModels.AdAccounts.AdAccount", "AdAccount")
-                        .WithMany("adimages")
-                        .HasForeignKey("account_id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 

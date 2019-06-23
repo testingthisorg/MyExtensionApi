@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace Assassins.DataModels.AppUsers
 {
-    public class AppUserDataSync : IDataModel
+    public class AppUserDataSync : DataModel
     {
         public long Id { get; set; }
         public int AppUserId { get; set; }
@@ -24,6 +24,8 @@ namespace Assassins.DataModels.AppUsers
         public bool AdsCompleted { get; set; }
         public bool CreativesCompleted { get; set; }
         public bool LeadFormsCompleted { get; set; }
+        public bool AdImagesCompleted { get; set; }
+        public bool AdInsightsCompleted { get; set; }
 
         public virtual ICollection<AdAccount> AdAccounts { get; set; }
         public virtual ICollection<Campaign> Campaigns { get; set; }
@@ -32,7 +34,6 @@ namespace Assassins.DataModels.AppUsers
         public virtual ICollection<AdCreative> AdCreatives { get; set; }
         public virtual ICollection<AdImage> AdImages { get; set; }
         public virtual ICollection<LeadForm> LeadForms { get; set; }
-
 
         public bool AllCompleted
         {
@@ -43,9 +44,13 @@ namespace Assassins.DataModels.AppUsers
                         AdSetsCompleted &&
                         AdsCompleted &&
                         CreativesCompleted &&
-                        LeadFormsCompleted;
+                        LeadFormsCompleted && 
+                        AdImagesCompleted;
             }
         }
+
+
+
         public override IDataViewModel ToViewModel()
         {
             var vm = new AppUserDataSyncViewModel()
@@ -59,7 +64,9 @@ namespace Assassins.DataModels.AppUsers
                 AdSetsCompleted = AdSetsCompleted,
                 AdsCompleted = AdsCompleted,
                 CreativesCompleted = CreativesCompleted,
-                LeadFormsCompleted = LeadFormsCompleted
+                LeadFormsCompleted = LeadFormsCompleted,
+                AdImagesCompleted =    AdImagesCompleted,
+                AdInsightsCompleted = AdInsightsCompleted
             };
             return vm;
         }
@@ -78,8 +85,10 @@ namespace Assassins.DataModels.AppUsers
         public bool AdsCompleted { get; set; }
         public bool CreativesCompleted { get; set; }
         public bool LeadFormsCompleted { get; set; }
+        public bool AdImagesCompleted { get; set; }
+        public bool AdInsightsCompleted { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new AppUserDataSync()
             {

@@ -3,7 +3,7 @@ using Assassins.DataModels.Interfaces;
 
 namespace Assassins.DataModels.Actions
 {
-    public class Action : IDataModel
+    public class Action : DataModel
     {
         public long? campaign_insight_id { get; set; }
         public CampaignInsight CampaignInsight { get; set; }
@@ -37,7 +37,7 @@ namespace Assassins.DataModels.Actions
         public virtual ActionTypeViewModel action_type { get; set; }
         public double value { get; set; }
         public string Discriminator { get; set; }
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new Action()
             {

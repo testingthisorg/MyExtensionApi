@@ -15,5 +15,6 @@ namespace Assassins.DataAccess.Repositories.Campaigns
         void UpdateCampaigns(ICollection<Campaign> toUpdate);
         void AddCampaigns(ICollection<Campaign> toAdd);
         ICollection<long> GetCampaignIdsByOwnerId(long owner_id);
+        void AddCampaignHistoryItems(List<_CampaignHistoryItem> historyItems);
     }
 }

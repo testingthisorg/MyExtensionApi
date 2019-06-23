@@ -4,9 +4,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Assassins.DataModels.AdSets
 {
-    public class Geolocation : IDataModel
+    public class Geolocation : HistoryItem
     {
-      //  public int AaId { get; set; }
         public long adset_id { get; set; }
         public virtual Targeting Targeting { get; set; }
         [NotMapped]
@@ -33,6 +32,33 @@ namespace Assassins.DataModels.AdSets
             return vm;
         }
     }
+    public class _GeolocationHistoryItem : HistoryItem
+    {
+        public long adset_id { get; set; }
+        //public virtual Targeting Targeting { get; set; }
+        //[NotMapped]
+        //public ICollection<Region> regions { get; set; }
+        //public ICollection<GeolocationRegionMap> region_maps { get; set; }
+        public ICollection<string> location_types { get; set; }
+
+        public override IDataViewModel ToViewModel()
+        {
+            var vm = new GeoLocationViewModel()
+            {
+                adset_id = adset_id,
+                region_maps = new List<GeolocationRegionMapViewModel>(),
+                location_types = location_types
+            };
+            //if (region_maps != null)
+            //{
+            //    foreach (var item in region_maps)
+            //    {
+            //        vm.region_maps.Add((GeolocationRegionMapViewModel)item.ToViewModel());
+            //    }
+            //}
+            return vm;
+        }
+    }
     public class GeoLocationViewModel : IDataViewModel
     {
         public long adset_id { get; set; }
@@ -41,7 +67,7 @@ namespace Assassins.DataModels.AdSets
         public ICollection<GeolocationRegionMapViewModel> region_maps { get; set; }
         public ICollection<string> location_types { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var vm = new Geolocation()
             {

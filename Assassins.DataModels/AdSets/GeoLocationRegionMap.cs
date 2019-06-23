@@ -2,12 +2,29 @@
 
 namespace Assassins.DataModels.AdSets
 {
-    public class GeolocationRegionMap : IDataModel
+    public class GeolocationRegionMap : HistoryItem
     {
         public long adset_id { get; set; }
         public virtual Geolocation GeoLocation { get; set; }
         public int key { get; set; }
         public virtual Region Region { get; set; }
+
+        public override IDataViewModel ToViewModel()
+        {
+            var vm = new GeolocationRegionMapViewModel()
+            {
+                adset_id = adset_id,
+                key = key
+            };
+            return vm;
+        }
+    }
+    public class _GeolocationRegionMapHistoryItem : HistoryItem
+    {
+        public long adset_id { get; set; }
+        //public virtual _GeolocationHistoryItem GeoLocation { get; set; }
+        public int key { get; set; }
+        //public virtual Region Region { get; set; }
 
         public override IDataViewModel ToViewModel()
         {
@@ -26,7 +43,7 @@ namespace Assassins.DataModels.AdSets
         public int key { get; set; }
         public virtual Region Region { get; set; }
 
-        public IDataModel ToModel()
+        public DataModel ToModel()
         {
             var model = new GeolocationRegionMap()
             {

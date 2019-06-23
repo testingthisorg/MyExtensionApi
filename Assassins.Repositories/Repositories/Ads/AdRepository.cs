@@ -11,7 +11,7 @@ namespace Assassins.DataAccess.Repositories
     public class AdRepository : BaseRepository, IAdRepository
     {
         public BaseRepository Base { get { return this as BaseRepository; } }
-        private readonly string key = "ads";
+        //private readonly string key = "ads";
         public AdRepository(MainContext context, IOptions<AppValueConfig> appValConfig)
             : base(context, appValConfig) { }
 
@@ -43,6 +43,11 @@ namespace Assassins.DataAccess.Repositories
         public void UpdateAds(ICollection<Ad> toUpdate)
         {
             _context.Ads.UpdateRange(toUpdate);
+        }
+
+        public void AddAdHistoryItems(List<_AdHistoryItem> historyItems)
+        {
+            _context._AdHistory.AddRange(historyItems);
         }
     }
 }
