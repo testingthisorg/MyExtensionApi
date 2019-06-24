@@ -151,7 +151,8 @@ namespace Assassins.DataAccess.Contexts
                             ModifiedOn = DateTime.Parse("1980-10-20 00:00:00.0000000")
                         });
             #endregion USERS & ROLES
-
+            start here - hook up the geolocation type cities, regions, custom_locations/custom_locationshistoryitems, 
+                            countries
             #region Data Syncs
             modelBuilder.Entity<AppUserDataSync>().HasKey(k => k.Id);
             modelBuilder.Entity<AppUserDataSync>()

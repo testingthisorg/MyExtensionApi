@@ -31,7 +31,7 @@ namespace Assassins.DataModels.AdSets
             };
             if (geo_locations != null)
             {
-                vm.geo_locations = (GeoLocationViewModel)geo_locations.ToViewModel();
+                vm.geo_locations = (GeolocationViewModel)geo_locations.ToViewModel();
             }
             return vm;
         }
@@ -76,7 +76,7 @@ namespace Assassins.DataModels.AdSets
         public long adset_id { get; set; }
         public int age_max { get; set; }
         public int age_min { get; set; }
-        public GeoLocationViewModel geo_locations { get; set; }
+        public GeolocationViewModel geo_locations { get; set; }
         public ICollection<string> publisher_platforms { get; set; }
         public ICollection<string> facebook_positions { get; set; }
         public ICollection<string> instagram_positions { get; set; }
